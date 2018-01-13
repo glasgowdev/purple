@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "Purple.PurpleD": {
+      "commandName": "Project"
+    },
+    "Purple.PurpleD Test": {
+      "commandName": "Project",
+      "commandLineArgs": "-testnet"
+    }
+  }
+}

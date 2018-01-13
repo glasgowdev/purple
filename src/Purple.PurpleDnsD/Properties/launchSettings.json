@@ -1,0 +1,15 @@
+{
+  "profiles": {
+    "Purple.PurpleDnsD": {
+      "commandName": "Project"
+    },
+    "Purple.PurpleDnsD Test": {
+      "commandName": "Project",
+      "commandLineArgs": "-testnet -dnslistenport=5399 -dnshostname=dns.Purpleplatform.com -dnsnameserver=ns1.dns.Purpleplatform.com -dnsmailbox=admin@Purpleplatform.com"
+    },
+    "Purple.PurpleDnsD FullNode Test": {
+      "commandName": "Project",
+      "commandLineArgs": "-testnet -dnsfullnode -dnslistenport=5399 -dnshostname=dns.Purpleplatform.com -dnsnameserver=ns1.dns.Purpleplatform.com -dnsmailbox=admin@Purpleplatform.com"
+    }
+  }
+}

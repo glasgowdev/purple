@@ -1,0 +1,16 @@
+{
+  "profiles": {
+    "Purple.CLI Purple REST API": {
+      "commandName": "Project",
+      "commandLineArgs": "Purple Wallet/files"
+    },
+    "Purple.CLI Purple RPC": {
+      "commandName": "Project",
+      "commandLineArgs": "Purple -rpcuser=Purpletestuser -rpcpassword=Purpletestpass -rpcport=26174 getinfo"
+    },
+    "Purple.CLI Bitcoin RPC": {
+      "commandName": "Project",
+      "commandLineArgs": "bitcoin -rpcuser=btctestuser -rpcpassword=btctestpass getbalance"
+    }
+  }
+}

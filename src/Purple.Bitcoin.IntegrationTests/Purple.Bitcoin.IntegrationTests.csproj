@@ -1,0 +1,66 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net462|AnyCPU'">
+    <OutputType>exe</OutputType>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <AssemblyName>Purple.Bitcoin.IntegrationTests</AssemblyName>    
+    <PackageId>Purple.Bitcoin.IntegrationTests</PackageId>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+    <RuntimeFrameworkVersion>2.0.0</RuntimeFrameworkVersion>
+    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <GenerateProgramFile>false</GenerateProgramFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;1705;IDE0008;</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="EnvironmentMockUpHelpers\PoWPoSRunner.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NBitcoin\NBitcoin.csproj" />
+    <ProjectReference Include="..\Purple.Bitcoin.Features.Api\Purple.Bitcoin.Features.Api.csproj" />
+    <ProjectReference Include="..\Purple.Bitcoin.Features.BlockStore\Purple.Bitcoin.Features.BlockStore.csproj" />
+    <ProjectReference Include="..\Purple.Bitcoin.Features.Consensus\Purple.Bitcoin.Features.Consensus.csproj" />
+    <ProjectReference Include="..\Purple.Bitcoin.Features.LightWallet\Purple.Bitcoin.Features.LightWallet.csproj" />
+    <ProjectReference Include="..\Purple.Bitcoin.Features.MemoryPool\Purple.Bitcoin.Features.MemoryPool.csproj" />
+    <ProjectReference Include="..\Purple.Bitcoin.Features.Miner\Purple.Bitcoin.Features.Miner.csproj" />
+    <ProjectReference Include="..\Purple.Bitcoin.Features.Notifications\Purple.Bitcoin.Features.Notifications.csproj" />
+    <ProjectReference Include="..\Purple.Bitcoin.Features.RPC\Purple.Bitcoin.Features.RPC.csproj" />
+    <ProjectReference Include="..\Purple.Bitcoin.Features.Wallet\Purple.Bitcoin.Features.Wallet.csproj" />
+    <ProjectReference Include="..\Purple.Bitcoin.Features.WatchOnlyWallet\Purple.Bitcoin.Features.WatchOnlyWallet.csproj" />
+    <ProjectReference Include="..\Purple.Bitcoin\Purple.Bitcoin.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
+    <PackageReference Include="xunit" Version="2.3.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Data\test.wallet.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="xunit.runner.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

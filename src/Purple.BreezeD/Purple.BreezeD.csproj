@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <AssemblyName>Purple.BreezeD</AssemblyName>
+    <OutputType>Exe</OutputType>
+    <PackageId>Purple.BreezeD</PackageId>
+    <RuntimeFrameworkVersion>2.0.0</RuntimeFrameworkVersion>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NBitcoin\NBitcoin.csproj" />
+    <ProjectReference Include="..\Purple.Bitcoin.Features.Api\Purple.Bitcoin.Features.Api.csproj" />
+    <ProjectReference Include="..\Purple.Bitcoin.Features.LightWallet\Purple.Bitcoin.Features.LightWallet.csproj" />
+    <ProjectReference Include="..\Purple.Bitcoin.Features.Notifications\Purple.Bitcoin.Features.Notifications.csproj" />
+    <ProjectReference Include="..\Purple.Bitcoin.Features.Wallet\Purple.Bitcoin.Features.Wallet.csproj" />
+    <ProjectReference Include="..\Purple.Bitcoin\Purple.Bitcoin.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <RuntimeIdentifiers>win7-x86;win7-x64;win10-x86;win10-x64;osx.10.12-x64;ubuntu.14.04-x64;ubuntu.16.04-x64</RuntimeIdentifiers>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  
+</Project>

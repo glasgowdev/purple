@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "Purple.BitcoinD": {
+      "commandName": "Project"
+    },
+    "Purple.BitcoinD Test": {
+      "commandName": "Project",
+      "commandLineArgs": "-testnet"
+    }
+  }
+}

@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <AssemblyName>Purple.PurpleDnsD</AssemblyName>
+    <OutputType>Exe</OutputType>
+    <PackageId>Purple.StratisDnsD</PackageId>
+    <RuntimeFrameworkVersion>2.0.0</RuntimeFrameworkVersion>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;1705;IDE0008;</NoWarn>
+  </PropertyGroup>  
+
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>Purple.PurpleDnsD</RootNamespace>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\NBitcoin\NBitcoin.csproj" />
+    <ProjectReference Include="..\Purple.Bitcoin.Features.Api\Purple.Bitcoin.Features.Api.csproj" />
+    <ProjectReference Include="..\Purple.Bitcoin.Features.BlockStore\Purple.Bitcoin.Features.BlockStore.csproj" />
+    <ProjectReference Include="..\Purple.Bitcoin.Features.Consensus\Purple.Bitcoin.Features.Consensus.csproj" />
+    <ProjectReference Include="..\Purple.Bitcoin.Features.Dns\Purple.Bitcoin.Features.Dns.csproj" />
+    <ProjectReference Include="..\Purple.Bitcoin.Features.MemoryPool\Purple.Bitcoin.Features.MemoryPool.csproj" />
+    <ProjectReference Include="..\Purple.Bitcoin.Features.Miner\Purple.Bitcoin.Features.Miner.csproj" />
+    <ProjectReference Include="..\Purple.Bitcoin.Features.RPC\Purple.Bitcoin.Features.RPC.csproj" />
+    <ProjectReference Include="..\Purple.Bitcoin.Features.Wallet\Purple.Bitcoin.Features.Wallet.csproj" />
+    <ProjectReference Include="..\Purple.Bitcoin\Purple.Bitcoin.csproj" />
+  </ItemGroup>
+
+</Project>

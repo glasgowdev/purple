@@ -1,0 +1,20 @@
+{
+  "profiles": {
+    "Bitcoin Main": {
+      "commandName": "Project",
+      "commandLineArgs": "Purple -testnet"
+    },
+    "Bitcoin Test": {
+      "commandName": "Project",
+      "commandLineArgs": "-testnet -debug=all -loglevel=debug"
+    },
+    "Purple Main": {
+      "commandName": "Project",
+      "commandLineArgs": "Purple "
+    },
+    "Purple Test": {
+      "commandName": "Project",
+      "commandLineArgs": "Purple -testnet -debug=all -loglevel=debug"
+    }
+  }
+}
