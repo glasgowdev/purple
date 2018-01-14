@@ -263,18 +263,18 @@ namespace Purple.Bitcoin.IntegrationTests
             {
                 using (var repo = new ChainRepository(dir.FolderName))
                 {
-                    var chain = new ConcurrentChain(Network.RegTest);
+                    var chain = new ConcurrentChain(Network.PurpleRegTest);
                     repo.LoadAsync(chain).GetAwaiter().GetResult();
                     Assert.True(chain.Tip == chain.Genesis);
-                    chain = new ConcurrentChain(Network.RegTest);
+                    chain = new ConcurrentChain(Network.PurpleRegTest);
                     var tip = this.AppendBlock(chain);
                     repo.SaveAsync(chain).GetAwaiter().GetResult();
-                    var newChain = new ConcurrentChain(Network.RegTest);
+                    var newChain = new ConcurrentChain(Network.PurpleRegTest);
                     repo.LoadAsync(newChain).GetAwaiter().GetResult();
                     Assert.Equal(tip, newChain.Tip);
                     tip = this.AppendBlock(chain);
                     repo.SaveAsync(chain).GetAwaiter().GetResult();
-                    newChain = new ConcurrentChain(Network.RegTest);
+                    newChain = new ConcurrentChain(Network.PurpleRegTest);
                     repo.LoadAsync(newChain).GetAwaiter().GetResult();
                     Assert.Equal(tip, newChain.Tip);
                 }
@@ -342,9 +342,9 @@ namespace Purple.Bitcoin.IntegrationTests
                 Flags = consensusFlags,
             };
 
-            Network.Main.Consensus.Options = new PowConsensusOptions();
+            Network.PurpleMain.Consensus.Options = new PowConsensusOptions();
             ConsensusSettings consensusSettings = new ConsensusSettings(NodeSettings.Default(), this.loggerFactory);
-            var validator = new PowConsensusValidator(Network.Main, new Checkpoints(Network.Main, consensusSettings), DateTimeProvider.Default, this.loggerFactory);
+            var validator = new PowConsensusValidator(Network.PurpleMain, new Checkpoints(Network.PurpleMain, consensusSettings), DateTimeProvider.Default, this.loggerFactory);
             //validator.CheckBlockHeader(context);
             validator.ContextualCheckBlock(context);
             validator.CheckBlock(context);

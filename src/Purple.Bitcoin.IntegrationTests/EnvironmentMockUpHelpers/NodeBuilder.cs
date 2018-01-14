@@ -224,7 +224,7 @@ namespace Purple.Bitcoin.IntegrationTests.EnvironmentMockUpHelpers
         public CoreNode CreateNode(bool start = false)
         {
             string child = this.CreateNewEmptyFolder();
-            var node = new CoreNode(child, new BitcoinCoreRunner(this.BitcoinD), this, Network.RegTest);
+            var node = new CoreNode(child, new BitcoinCoreRunner(this.BitcoinD), this, Network.PurpleRegTest);
             this.Nodes.Add(node);
             if (start)
                 node.Start();
@@ -234,7 +234,7 @@ namespace Purple.Bitcoin.IntegrationTests.EnvironmentMockUpHelpers
         public CoreNode CreatePurplePowNode(bool start = false, Action<IFullNodeBuilder> callback = null)
         {
             string child = this.CreateNewEmptyFolder();
-            var node = new CoreNode(child, new PurpleBitcoinPowRunner(callback), this, Network.RegTest);
+            var node = new CoreNode(child, new PurpleBitcoinPowRunner(callback), this, Network.PurpleRegTest);
             this.Nodes.Add(node);
             if (start)
                 node.Start();
@@ -244,7 +244,7 @@ namespace Purple.Bitcoin.IntegrationTests.EnvironmentMockUpHelpers
         public CoreNode CreatePurplePosNode(bool start = false, Action<IFullNodeBuilder> callback = null)
         {
             string child = this.CreateNewEmptyFolder();
-            var node = new CoreNode(child, new PurpleBitcoinPosRunner(callback), this, Network.RegTest, configfile: "Purple.conf");
+            var node = new CoreNode(child, new PurpleBitcoinPosRunner(callback), this, Network.PurpleRegTest, configfile: "Purple.conf");
             this.Nodes.Add(node);
             if (start)
                 node.Start();
@@ -253,7 +253,7 @@ namespace Purple.Bitcoin.IntegrationTests.EnvironmentMockUpHelpers
 
         public CoreNode ClonePurpleNode(CoreNode cloneNode)
         {
-            var node = new CoreNode(cloneNode.Folder, new PurpleBitcoinPowRunner(), this, Network.RegTest, false);
+            var node = new CoreNode(cloneNode.Folder, new PurpleBitcoinPowRunner(), this, Network.PurpleRegTest, false);
             this.Nodes.Add(node);
             this.Nodes.Remove(cloneNode);
             return node;

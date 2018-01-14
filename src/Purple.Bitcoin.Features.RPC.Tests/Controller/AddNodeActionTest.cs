@@ -12,7 +12,7 @@ namespace Purple.Bitcoin.Features.RPC.Tests.Controller
         {
             string testDirectory = CreateTestDir(this);
 
-            IFullNode fullNode = this.BuildServicedNode(testDirectory);
+            IFullNode fullNode = this.BuildStakingNode(testDirectory);
             ConnectionManagerController controller = fullNode.Services.ServiceProvider.GetService<ConnectionManagerController>();
 
             Assert.ThrowsAny<System.Net.Sockets.SocketException>(() => { controller.AddNode("0.0.0.0", "onetry"); });
@@ -26,7 +26,7 @@ namespace Purple.Bitcoin.Features.RPC.Tests.Controller
         {
             string testDirectory = CreateTestDir(this);
 
-            IFullNode fullNode = this.BuildServicedNode(testDirectory);
+            IFullNode fullNode = this.BuildStakingNode(testDirectory);
 
             ConnectionManagerController controller = fullNode.Services.ServiceProvider.GetService<ConnectionManagerController>();
 

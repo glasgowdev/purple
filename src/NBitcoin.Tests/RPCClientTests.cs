@@ -62,8 +62,8 @@ namespace NBitcoin.Tests
                 builder.StartAll();
                 var response = rpc.SendCommand(RPCOperations.getblockhash, 0);
                 var actualGenesis = (string)response.Result;
-                Assert.Equal(Network.RegTest.GetGenesis().GetHash().ToString(), actualGenesis);
-                Assert.Equal(Network.RegTest.GetGenesis().GetHash(), rpc.GetBestBlockHash());
+                Assert.Equal(Network.PurpleRegTest.GetGenesis().GetHash().ToString(), actualGenesis);
+                Assert.Equal(Network.PurpleRegTest.GetGenesis().GetHash(), rpc.GetBestBlockHash());
             }
         }
 
@@ -93,10 +93,10 @@ namespace NBitcoin.Tests
                 var rpc = builder.CreateNode(true).CreateRPCClient();
                 builder.StartAll();
                 var response = rpc.GetBlockHeader(0);
-                AssertEx.CollectionEquals(Network.RegTest.GetGenesis().Header.ToBytes(), response.ToBytes());
+                AssertEx.CollectionEquals(Network.PurpleRegTest.GetGenesis().Header.ToBytes(), response.ToBytes());
 
                 response = rpc.GetBlockHeader(0);
-                Assert.Equal(Network.RegTest.GenesisHash, response.GetHash());
+                Assert.Equal(Network.PurpleRegTest.GenesisHash, response.GetHash());
             }
         }
 
@@ -148,7 +148,7 @@ namespace NBitcoin.Tests
                 var rpc = builder.CreateNode(true).CreateRPCClient();
                 builder.StartAll();
                 Key key = new Key();
-                rpc.ImportAddress(key.PubKey.GetAddress(Network.RegTest), TestAccount, false);
+                rpc.ImportAddress(key.PubKey.GetAddress(Network.PurpleRegTest), TestAccount, false);
                 BitcoinAddress address = rpc.GetAccountAddress(TestAccount);
                 BitcoinSecret secret = rpc.DumpPrivKey(address);
                 BitcoinSecret secret2 = rpc.GetAccountSecret(TestAccount);
@@ -169,7 +169,7 @@ namespace NBitcoin.Tests
                 var passphrase = "password1234";
                 rpc.SendCommand("encryptwallet", passphrase);
                 builder.Nodes[0].Restart();
-                rpc.ImportAddress(key.PubKey.GetAddress(Network.RegTest), TestAccount, false);
+                rpc.ImportAddress(key.PubKey.GetAddress(Network.PurpleRegTest), TestAccount, false);
                 BitcoinAddress address = rpc.GetAccountAddress(TestAccount);
                 rpc.WalletPassphrase(passphrase, 60);
                 BitcoinSecret secret = rpc.DumpPrivKey(address);
@@ -187,7 +187,7 @@ namespace NBitcoin.Tests
             foreach(var test in tests)
             {
                 var format = (RawFormat)Enum.Parse(typeof(RawFormat), (string)test[0], true);
-                var network = ((string)test[1]) == "Main" ? Network.Main : Network.TestNet;
+                var network = ((string)test[1]) == "Main" ? Network.PurpleMain : Network.PurpleTest;
                 var testData = ((JObject)test[2]).ToString();
 
                 Transaction raw = Transaction.Parse(testData, format, network);
@@ -241,7 +241,7 @@ namespace NBitcoin.Tests
     ""spendable"" : false
 }";
             var testData = JObject.Parse(testJson);
-            var unspentCoin = new UnspentCoin(testData, Network.TestNet);
+            var unspentCoin = new UnspentCoin(testData, Network.PurpleTest);
 
             Assert.Equal("test label", unspentCoin.Account);
             Assert.False(unspentCoin.IsSpendable);
@@ -262,7 +262,7 @@ namespace NBitcoin.Tests
     ""confirmations"" : 6210
 }";
             var testData = JObject.Parse(testJson);
-            var unspentCoin = new UnspentCoin(testData, Network.TestNet);
+            var unspentCoin = new UnspentCoin(testData, Network.PurpleTest);
 
             // Versions prior to 0.10.0 were always spendable (but had no JSON field)
             Assert.True(unspentCoin.IsSpendable);
@@ -284,7 +284,7 @@ namespace NBitcoin.Tests
     ""spendable"" : true
 }";
             var testData = JObject.Parse(testJson);
-            var unspentCoin = new UnspentCoin(testData, Network.TestNet);
+            var unspentCoin = new UnspentCoin(testData, Network.PurpleTest);
 
             Console.WriteLine("Redeem Script: {0}", unspentCoin.RedeemScript);
             Assert.NotNull(unspentCoin.RedeemScript);
@@ -297,7 +297,7 @@ namespace NBitcoin.Tests
             {
                 var rpc = builder.CreateNode(true).CreateRPCClient();
                 builder.StartAll();
-                var tx = Network.TestNet.GetGenesis().Transactions[0];
+                var tx = Network.PurpleTest.GetGenesis().Transactions[0];
 
                 var tx2 = rpc.DecodeRawTransaction(tx.ToBytes());
                 AssertJsonEquals(tx.ToString(RawFormat.Satoshi), tx2.ToString(RawFormat.Satoshi));
@@ -385,13 +385,13 @@ namespace NBitcoin.Tests
         public void CanAuthWithCookieFile()
         {
 #if NOFILEIO
-            Assert.Throws<NotSupportedException>(() => new RPCClient(Network.Main));
+            Assert.Throws<NotSupportedException>(() => new RPCClient(Network.PurpleMain));
 #else
             using(var builder = NodeBuilder.Create())
             {
                 //Sanity check that it does not throw
 #pragma warning disable CS0618
-                new RPCClient(new NetworkCredential("toto", "tata:blah"), "localhost:10393", Network.Main);
+                new RPCClient(new NetworkCredential("toto", "tata:blah"), "localhost:10393", Network.PurpleMain);
 
                 var node = builder.CreateNode();
                 node.CookieAuth = true;
@@ -400,11 +400,11 @@ namespace NBitcoin.Tests
                 rpc.GetBlockCount();
                 node.Restart();
                 rpc.GetBlockCount();
-                Assert.Throws<ArgumentException>(() => new RPCClient("cookiefile=Data\\tx_valid.json", new Uri("http://localhost/"), Network.RegTest));
-                Assert.Throws<FileNotFoundException>(() => new RPCClient("cookiefile=Data\\efpwwie.json", new Uri("http://localhost/"), Network.RegTest));
+                Assert.Throws<ArgumentException>(() => new RPCClient("cookiefile=Data\\tx_valid.json", new Uri("http://localhost/"), Network.PurpleRegTest));
+                Assert.Throws<FileNotFoundException>(() => new RPCClient("cookiefile=Data\\efpwwie.json", new Uri("http://localhost/"), Network.PurpleRegTest));
 
-                rpc = new RPCClient("bla:bla", null as Uri, Network.RegTest);
-                Assert.Equal("http://127.0.0.1:" + Network.RegTest.RPCPort + "/", rpc.Address.AbsoluteUri);
+                rpc = new RPCClient("bla:bla", null as Uri, Network.PurpleRegTest);
+                Assert.Equal("http://127.0.0.1:" + Network.PurpleRegTest.RPCPort + "/", rpc.Address.AbsoluteUri);
 
                 rpc = node.CreateRPCClient();
                 rpc = rpc.PrepareBatch();
@@ -419,7 +419,7 @@ namespace NBitcoin.Tests
                 rpc.SendBatch();
                 blockCount = blockCountAsync.GetAwaiter().GetResult();
 
-                rpc = new RPCClient("bla:bla", "http://toto/", Network.RegTest);
+                rpc = new RPCClient("bla:bla", "http://toto/", Network.PurpleRegTest);
             }
 #endif
         }

@@ -18,10 +18,10 @@ namespace NBitcoin.Tests
         public void ShouldThrowBase58Exception()
         {
             String key = "";
-            Assert.Throws<FormatException>(() => BitcoinAddress.Create(key, Network.Main));
+            Assert.Throws<FormatException>(() => BitcoinAddress.Create(key, Network.PurpleMain));
 
             key = null;
-            Assert.Throws<ArgumentNullException>(() => BitcoinAddress.Create(key, Network.Main));
+            Assert.Throws<ArgumentNullException>(() => BitcoinAddress.Create(key, Network.PurpleMain));
         }
     }
 }

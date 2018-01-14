@@ -18,7 +18,7 @@ namespace Purple.Bitcoin.IntegrationTests
 
         public NodeContext(string name, Network network, bool clean)
         {
-            network = network ?? Network.RegTest;
+            network = network ?? Network.PurpleRegTest;
             this.loggerFactory = new LoggerFactory();
             this.Network = network;
             this.testDirectory = TestDirectory.Create(name, clean);

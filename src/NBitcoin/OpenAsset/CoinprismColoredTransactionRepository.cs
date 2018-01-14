@@ -26,7 +26,7 @@ namespace NBitcoin.OpenAsset
 
     public class CoinprismColoredTransactionRepository : IColoredTransactionRepository
     {
-        private Network _network = Network.Main;
+        private Network _network = Network.PurpleMain;
 
         class CoinprismTransactionRepository : ITransactionRepository
         {
@@ -70,13 +70,13 @@ namespace NBitcoin.OpenAsset
             {
                 ColoredTransaction result = new ColoredTransaction();
 
-                String url = _network == Network.Main ? String.Format("https://api.coinprism.com/v1/transactions/{0}", txId) : String.Format("https://testnet.api.coinprism.com/v1/transactions/{0}", txId);
+                String url = _network == Network.PurpleMain ? String.Format("https://api.coinprism.com/v1/transactions/{0}", txId) : String.Format("https://testnet.api.coinprism.com/v1/transactions/{0}", txId);
 
                 HttpWebRequest req = HttpWebRequest.CreateHttp(url);
                 req.Method = "GET";
 
 //#if !NOCUSTOMSSLVALIDATION
-//                if(_network == Network.TestNet)
+//                if(_network == Network.PurpleTest)
 //                    req.ServerCertificateValidationCallback += (a, b, c, d) => true;
 //#endif
                 using(var response = await req.GetResponseAsync().ConfigureAwait(false))
@@ -157,12 +157,12 @@ namespace NBitcoin.OpenAsset
             if(transaction == null)
                 throw new ArgumentNullException("transaction");
 
-            String url = _network == Network.Main ? "https://api.coinprism.com/v1/transactions/v1/sendrawtransaction" : "https://testnet.api.coinprism.com/v1/sendrawtransaction";
+            String url = _network == Network.PurpleMain ? "https://api.coinprism.com/v1/transactions/v1/sendrawtransaction" : "https://testnet.api.coinprism.com/v1/sendrawtransaction";
             HttpWebRequest req = HttpWebRequest.CreateHttp(url);
             req.Method = "POST";
             req.ContentType = "application/json";
 //#if !NOCUSTOMSSLVALIDATION
-//            if(_network == Network.TestNet)
+//            if(_network == Network.PurpleTest)
 //                req.ServerCertificateValidationCallback += (a, b, c, d) => true;
 //#endif
             var stream = await req.GetRequestStreamAsync().ConfigureAwait(false);

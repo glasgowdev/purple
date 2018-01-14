@@ -137,7 +137,7 @@ namespace Purple.Bitcoin.IntegrationTests
         public void Given__NodesAreSynced__When__ABigReorgHappens__Then__TheReorgIsIgnored()
         {
             // Temporary fix so the Network static initialize will not break.
-            var m = Network.Main;
+            var m = Network.PurpleMain;
             Transaction.TimeStamp = true;
             Block.BlockSignature = true;
             try
@@ -232,7 +232,7 @@ namespace Purple.Bitcoin.IntegrationTests
         public void PullerVsMinerRaceCondition()
         {
             // Temporary fix so the Network static initialize will not break.
-            var m = Network.Main;
+            var m = Network.PurpleMain;
             Transaction.TimeStamp = true;
             Block.BlockSignature = true;
             try

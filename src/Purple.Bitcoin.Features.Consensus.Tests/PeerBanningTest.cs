@@ -25,7 +25,7 @@ namespace Purple.Bitcoin.Features.Consensus.Tests
             string dataDir = Path.Combine("TestData", nameof(PeerBanningTest), nameof(this.NodeIsSynced_PeerSendsABadBlockAndPeerDiconnected_ThePeerGetsBanned_Async));
             Directory.CreateDirectory(dataDir);
 
-            TestChainContext context = await TestChainFactory.CreateAsync(Network.RegTest, dataDir);
+            TestChainContext context = await TestChainFactory.CreateAsync(Network.PurpleRegTest, dataDir);
             var peer = new IPEndPoint(IPAddress.Parse("1.2.3.4"), context.Network.DefaultPort);
 
             context.MockReadOnlyNodesCollection.Setup(s => s.FindByEndpoint(It.IsAny<IPEndPoint>())).Returns((NetworkPeer)null);
@@ -44,7 +44,7 @@ namespace Purple.Bitcoin.Features.Consensus.Tests
             string dataDir = Path.Combine("TestData", nameof(PeerBanningTest), nameof(this.NodeIsSynced_PeerSendsABadBlockAndPeerIsConnected_ThePeerGetsBanned_Async));
             Directory.CreateDirectory(dataDir);
 
-            TestChainContext context = await TestChainFactory.CreateAsync(Network.RegTest, dataDir);
+            TestChainContext context = await TestChainFactory.CreateAsync(Network.PurpleRegTest, dataDir);
             var peer = new IPEndPoint(IPAddress.Parse("1.2.3.4"), context.Network.DefaultPort);
 
             var connectionManagerBehavior = new ConnectionManagerBehavior(false, context.ConnectionManager, context.LoggerFactory);
@@ -68,7 +68,7 @@ namespace Purple.Bitcoin.Features.Consensus.Tests
             string dataDir = Path.Combine("TestData", nameof(PeerBanningTest), nameof(this.NodeIsSynced_PeerSendsABadBlockAndPeerIsWhitelisted_ThePeerIsNotBanned_Async));
             Directory.CreateDirectory(dataDir);
 
-            TestChainContext context = await TestChainFactory.CreateAsync(Network.RegTest, dataDir);
+            TestChainContext context = await TestChainFactory.CreateAsync(Network.PurpleRegTest, dataDir);
             var peer = new IPEndPoint(IPAddress.Parse("1.2.3.4"), context.Network.DefaultPort);
 
             var connectionManagerBehavior = new ConnectionManagerBehavior(false, context.ConnectionManager, context.LoggerFactory) { Whitelisted = true };
@@ -93,7 +93,7 @@ namespace Purple.Bitcoin.Features.Consensus.Tests
             string dataDir = Path.Combine("TestData", nameof(PeerBanningTest), nameof(this.NodeIsSynced_PeerSendsABadBlockAndErrorIsNotBanError_ThePeerIsNotBanned_Async));
             Directory.CreateDirectory(dataDir);
 
-            TestChainContext context = await TestChainFactory.CreateAsync(Network.RegTest, dataDir);
+            TestChainContext context = await TestChainFactory.CreateAsync(Network.PurpleRegTest, dataDir);
             var peer = new IPEndPoint(IPAddress.Parse("1.2.3.4"), context.Network.DefaultPort);
 
             var connectionManagerBehavior = new ConnectionManagerBehavior(false, context.ConnectionManager, context.LoggerFactory) { Whitelisted = true };
@@ -118,7 +118,7 @@ namespace Purple.Bitcoin.Features.Consensus.Tests
             string dataDir = Path.Combine("TestData", nameof(PeerBanningTest), nameof(this.NodeIsSynced_PeerSendsABadBlockAndPeerIsBandAndBanIsExpired_ThePeerIsNotBanned_Async));
             Directory.CreateDirectory(dataDir);
 
-            TestChainContext context = await TestChainFactory.CreateAsync(Network.RegTest, dataDir);
+            TestChainContext context = await TestChainFactory.CreateAsync(Network.PurpleRegTest, dataDir);
             var peer = new IPEndPoint(IPAddress.Parse("1.2.3.4"), context.Network.DefaultPort);
 
             var connectionManagerBehavior = new ConnectionManagerBehavior(false, context.ConnectionManager, context.LoggerFactory) { Whitelisted = true };

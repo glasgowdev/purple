@@ -97,9 +97,9 @@ namespace NBitcoin.Tests
                 bool isPrivkey = (bool)test.GetDynamic(2).isPrivkey;
                 bool isTestnet = (bool)test.GetDynamic(2).isTestnet;
                 if(isTestnet)
-                    network = Network.TestNet;
+                    network = Network.PurpleTest;
                 else
-                    network = Network.Main;
+                    network = Network.PurpleMain;
 
                 if(isPrivkey)
                 {
@@ -159,9 +159,9 @@ namespace NBitcoin.Tests
                 bool isTestnet = (bool)metadata.isTestnet;
 
                 if(isTestnet)
-                    network = Network.TestNet;
+                    network = Network.PurpleTest;
                 else
-                    network = Network.Main;
+                    network = Network.PurpleMain;
                 if(isPrivkey)
                 {
                     bool isCompressed = metadata.isCompressed;
@@ -230,8 +230,8 @@ namespace NBitcoin.Tests
             {
                 string data = (string)i[0];
                 // must be invalid as public and as private key
-                Assert.Throws<FormatException>(() => Network.Main.CreateBitcoinAddress(data));
-                Assert.Throws<FormatException>(() => Network.Main.CreateBitcoinSecret(data));
+                Assert.Throws<FormatException>(() => Network.PurpleMain.CreateBitcoinAddress(data));
+                Assert.Throws<FormatException>(() => Network.PurpleMain.CreateBitcoinSecret(data));
             }
         }
     }

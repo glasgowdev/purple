@@ -92,7 +92,7 @@ namespace Purple.Bitcoin.Tests
             for (int i = 0; i < amount; i++)
             {
                 Block block = this.CreateBlock(i);
-                block.Header.HashPrevBlock = blocks.LastOrDefault()?.GetHash() ?? Network.Main.GenesisHash;
+                block.Header.HashPrevBlock = blocks.LastOrDefault()?.GetHash() ?? Network.PurpleMain.GenesisHash;
                 blocks.Add(block);
             }
 

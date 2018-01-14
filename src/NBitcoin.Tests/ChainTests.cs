@@ -20,7 +20,7 @@ namespace NBitcoin.Tests
         [Trait("UnitTest", "UnitTest")]
         public void CanCloneConcurrentChain()
         {
-            var chain = new ConcurrentChain(Network.Main);
+            var chain = new ConcurrentChain(Network.PurpleMain);
             var common = AppendBlock(chain);
             var fork = AppendBlock(chain);
             var fork2 = AppendBlock(chain);
@@ -35,7 +35,7 @@ namespace NBitcoin.Tests
         [Trait("UnitTest", "UnitTest")]
         public void CanSaveChain()
         {
-            ConcurrentChain chain = new ConcurrentChain(Network.Main);
+            ConcurrentChain chain = new ConcurrentChain(Network.PurpleMain);
             AppendBlock(chain);
             AppendBlock(chain);
             var fork = AppendBlock(chain);
@@ -69,7 +69,7 @@ namespace NBitcoin.Tests
         public void CanLoadAndSaveConcurrentChain()
         {
             ConcurrentChain cchain = new ConcurrentChain();
-            ConcurrentChain chain = new ConcurrentChain(Network.Main);
+            ConcurrentChain chain = new ConcurrentChain(Network.PurpleMain);
             AddBlock(chain);
             AddBlock(chain);
             AddBlock(chain);
@@ -83,7 +83,7 @@ namespace NBitcoin.Tests
             Assert.Equal(cchain.Tip, chain.Tip);
             Assert.NotNull(cchain.GetBlock(0));
 
-            cchain = new ConcurrentChain(Network.TestNet);
+            cchain = new ConcurrentChain(Network.PurpleTest);
             cchain.Load(cchain.ToBytes());
             Assert.NotNull(cchain.GetBlock(0));
         }
@@ -92,7 +92,7 @@ namespace NBitcoin.Tests
         public void CanBuildConcurrentChain()
         {
             ConcurrentChain cchain = new ConcurrentChain();
-            ConcurrentChain chain = new ConcurrentChain(Network.Main);
+            ConcurrentChain chain = new ConcurrentChain(Network.PurpleMain);
             Assert.Null(cchain.SetTip(chain.Tip));
             var b0 = cchain.Tip;
             Assert.Equal(cchain.Tip, chain.Tip);
@@ -143,7 +143,7 @@ namespace NBitcoin.Tests
         [Trait("UnitTest", "UnitTest")]
         public void CanIterateConcurrentChain()
         {
-            ConcurrentChain chain = new ConcurrentChain(Network.Main);
+            ConcurrentChain chain = new ConcurrentChain(Network.PurpleMain);
             AppendBlock(chain);
             AppendBlock(chain);
             AppendBlock(chain);
@@ -162,7 +162,7 @@ namespace NBitcoin.Tests
         [Trait("UnitTest", "UnitTest")]
         public void CanBuildChain()
         {
-            ConcurrentChain chain = new ConcurrentChain(Network.Main);
+            ConcurrentChain chain = new ConcurrentChain(Network.PurpleMain);
             AppendBlock(chain);
             AppendBlock(chain);
             AppendBlock(chain);
@@ -176,16 +176,16 @@ namespace NBitcoin.Tests
         [Trait("UnitTest", "UnitTest")]
         public void CanFindFork()
         {
-            ConcurrentChain chain = new ConcurrentChain(Network.Main);
-            ConcurrentChain chain2 = new ConcurrentChain(Network.Main);
+            ConcurrentChain chain = new ConcurrentChain(Network.PurpleMain);
+            ConcurrentChain chain2 = new ConcurrentChain(Network.PurpleMain);
             AppendBlock(chain);
             var fork = AppendBlock(chain);
             var tip = AppendBlock(chain);
 
             AssertFork(chain, chain2, chain.Genesis);
-            chain2 = new ConcurrentChain(Network.TestNet);
+            chain2 = new ConcurrentChain(Network.PurpleTest);
             AssertFork(chain, chain2, null);
-            chain2 = new ConcurrentChain(Network.Main);
+            chain2 = new ConcurrentChain(Network.PurpleMain);
             chain2.SetTip(fork);
             AssertFork(chain, chain2, fork);
             chain2.SetTip(tip);
@@ -225,7 +225,7 @@ namespace NBitcoin.Tests
                 var block = main.GetBlock(height).Header;
 
                 Assert.Equal(expectedTarget, block.Bits);
-                var target = main.GetWorkRequired(Network.Main, height);
+                var target = main.GetWorkRequired(Network.PurpleMain, height);
                 Assert.Equal(expectedTarget, target);
             }
         }
@@ -237,7 +237,7 @@ namespace NBitcoin.Tests
             var main = new ConcurrentChain(LoadMainChain());
             foreach (var h in main.ToEnumerable(false))
             {
-                Assert.True(h.Validate(Network.Main));
+                Assert.True(h.Validate(Network.PurpleMain));
             }
         }
 
@@ -257,7 +257,7 @@ namespace NBitcoin.Tests
         [Trait("UnitTest", "UnitTest")]
         public void CanEnumerateAfterChainedBlock()
         {
-            ConcurrentChain chain = new ConcurrentChain(Network.Main);
+            ConcurrentChain chain = new ConcurrentChain(Network.PurpleMain);
             AppendBlock(chain);
             var a = AppendBlock(chain);
             var b = AppendBlock(chain);
@@ -296,7 +296,7 @@ namespace NBitcoin.Tests
         [Trait("UnitTest", "UnitTest")]
         public void CanForkBackward()
         {
-            ConcurrentChain chain = new ConcurrentChain(Network.Main);
+            ConcurrentChain chain = new ConcurrentChain(Network.PurpleMain);
             AppendBlock(chain);
             AppendBlock(chain);
             var fork = AppendBlock(chain);
@@ -382,8 +382,8 @@ namespace NBitcoin.Tests
         [Trait("UnitTest", "UnitTest")]
         public void CanForkSide()
         {
-            ConcurrentChain side = new ConcurrentChain(Network.Main);
-            ConcurrentChain main = new ConcurrentChain(Network.Main);
+            ConcurrentChain side = new ConcurrentChain(Network.PurpleMain);
+            ConcurrentChain main = new ConcurrentChain(Network.PurpleMain);
             AppendBlock(side, main);
             AppendBlock(side, main);
             var common = AppendBlock(side, main);

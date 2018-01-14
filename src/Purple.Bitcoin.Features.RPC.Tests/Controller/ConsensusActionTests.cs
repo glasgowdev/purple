@@ -17,7 +17,7 @@ namespace Purple.Bitcoin.Features.RPC.Tests.Controller
         {
             string dir = CreateTestDir(this);
 
-            var fullNode = this.BuildServicedNode(dir);
+            var fullNode = this.BuildStakingNode(dir);
             var controller = fullNode.Services.ServiceProvider.GetService<ConsensusController>();
 
             uint256 result = controller.GetBestBlockHash();
@@ -30,7 +30,7 @@ namespace Purple.Bitcoin.Features.RPC.Tests.Controller
         {
             string dir = CreateTestDir(this);
 
-            var fullNode = this.BuildServicedNode(dir);
+            var fullNode = this.BuildStakingNode(dir);
             var controller = fullNode.Services.ServiceProvider.GetService<ConsensusController>();
 
             uint256 result = controller.GetBlockHash(0);
@@ -43,7 +43,7 @@ namespace Purple.Bitcoin.Features.RPC.Tests.Controller
         {
             string dir = CreateTestDir(this);
 
-            var fullNode = this.BuildServicedNode(dir);
+            var fullNode = this.BuildStakingNode(dir);
             var isIBDProvider = fullNode.NodeService<IInitialBlockDownloadState>(true);
 
             Assert.NotNull(isIBDProvider);

@@ -239,7 +239,7 @@ namespace Purple.Bitcoin.IntegrationTests.EnvironmentMockUpHelpers
             {
                 node = (FullNode)new FullNodeBuilder()
                     .UseNodeSettings(args)
-                    .UseConsensus()
+                    .UsePurpleConsensus()
                     .UseBlockStore()
                     .UseMempool()
                     .AddMining()

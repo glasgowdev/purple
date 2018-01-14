@@ -15,25 +15,6 @@ namespace Purple.Bitcoin.Features.RPC.Tests.Controller
     public abstract class BaseRPCControllerTest : TestBase
     {
         /// <summary>
-        /// Builds a node with basic services and RPC enabled.
-        /// </summary>
-        /// <param name="dir">Data directory that the node should use.</param>
-        /// <returns>Interface to the newly built node.</returns>
-        public IFullNode BuildServicedNode(string dir)
-        {
-            NodeSettings nodeSettings = new NodeSettings().LoadArguments(new string[] { $"-datadir={dir}" });
-            var fullNodeBuilder = new FullNodeBuilder(nodeSettings);
-            IFullNode fullNode = fullNodeBuilder
-                .UseConsensus()
-                .UseBlockStore()
-                .UseMempool()
-                .AddRPC()
-                .Build();
-
-            return fullNode;
-        }
-
-        /// <summary>
         /// Builds a node with POS miner and RPC enabled.
         /// </summary>
         /// <param name="dir">Data directory that the node should use.</param>

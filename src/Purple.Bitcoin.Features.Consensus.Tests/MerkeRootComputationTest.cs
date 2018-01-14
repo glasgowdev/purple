@@ -52,8 +52,8 @@ namespace Purple.Bitcoin.Features.Consensus.Tests
         {
             LoggerFactory loggerFactory = new LoggerFactory();
             ConsensusSettings consensusSettings = new ConsensusSettings(NodeSettings.Default(), loggerFactory);
-            Network.Main.Consensus.Options = new PosConsensusOptions();
-            var consensusValidator = new PowConsensusValidator(Network.Main, new Checkpoints(Network.Main, consensusSettings), DateTimeProvider.Default, loggerFactory);
+            Network.PurpleMain.Consensus.Options = new PosConsensusOptions();
+            var consensusValidator = new PowConsensusValidator(Network.PurpleMain, new Checkpoints(Network.PurpleMain, consensusSettings), DateTimeProvider.Default, loggerFactory);
 
             return consensusValidator.ComputeMerkleRoot(leaves, out mutated);
         }

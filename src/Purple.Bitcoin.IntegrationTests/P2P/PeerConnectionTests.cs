@@ -23,7 +23,7 @@ namespace Purple.Bitcoin.IntegrationTests.P2P
 
         public PeerConnectionTests()
         {
-            this.network = Network.Main;
+            this.network = Network.PurpleMain;
         }
 
         /// <summary>

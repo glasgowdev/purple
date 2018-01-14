@@ -54,7 +54,7 @@ namespace Purple.Bitcoin.Tests.Builder
             Assert.Equal(nodeSettings.ConfigurationFile, this.fullNodeBuilder.NodeSettings.ConfigurationFile);
             Assert.Equal(nodeSettings.DataDir, this.fullNodeBuilder.NodeSettings.DataDir);
             Assert.NotNull(this.fullNodeBuilder.Network);
-            Assert.Equal(Network.Main, this.fullNodeBuilder.Network);
+            Assert.Equal(Network.PurpleMain, this.fullNodeBuilder.Network);
             Assert.Single(this.serviceCollectionDelegates);
         }
 
@@ -71,7 +71,7 @@ namespace Purple.Bitcoin.Tests.Builder
             Assert.Equal(nodeSettings.ConfigurationFile, this.fullNodeBuilder.NodeSettings.ConfigurationFile);
             Assert.Equal(nodeSettings.DataDir, this.fullNodeBuilder.NodeSettings.DataDir);
             Assert.NotNull(this.fullNodeBuilder.Network);
-            Assert.Equal(Network.TestNet, this.fullNodeBuilder.Network);
+            Assert.Equal(Network.PurpleTest, this.fullNodeBuilder.Network);
             Assert.Single(this.serviceCollectionDelegates);
         }
 
@@ -88,7 +88,7 @@ namespace Purple.Bitcoin.Tests.Builder
             Assert.Equal(nodeSettings.ConfigurationFile, this.fullNodeBuilder.NodeSettings.ConfigurationFile);
             Assert.Equal(nodeSettings.DataDir, this.fullNodeBuilder.NodeSettings.DataDir);
             Assert.NotNull(this.fullNodeBuilder.Network);
-            Assert.Equal(Network.RegTest, this.fullNodeBuilder.Network);
+            Assert.Equal(Network.PurpleRegTest, this.fullNodeBuilder.Network);
             Assert.Single(this.serviceCollectionDelegates);
         }
     }

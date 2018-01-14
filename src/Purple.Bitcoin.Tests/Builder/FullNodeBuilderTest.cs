@@ -59,7 +59,7 @@ namespace Purple.Bitcoin.Tests.Builder
             Assert.Single(this.featureCollectionDelegates);
             Assert.Empty(this.serviceProviderDelegates);
             Assert.Single(this.serviceCollectionDelegates);
-            Assert.Equal(Network.Main, this.fullNodeBuilder.Network);
+            Assert.Equal(Network.PurpleMain, this.fullNodeBuilder.Network);
             Assert.Equal(settings, this.fullNodeBuilder.NodeSettings);
         }
 
@@ -211,7 +211,7 @@ namespace Purple.Bitcoin.Tests.Builder
         public void WhenNodeSettingsIsNullUseDefault()
         {
             var builder = new FullNodeBuilder(null);
-            Assert.Equal(Network.Main, builder.Network);
+            Assert.Equal(Network.PurpleMain, builder.Network);
         }
     }
 }

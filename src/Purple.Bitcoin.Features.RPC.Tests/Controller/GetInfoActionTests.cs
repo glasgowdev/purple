@@ -13,7 +13,7 @@ namespace Purple.Bitcoin.Features.RPC.Tests.Controller
         public void CallWithDependencies()
         {
             string dir = CreateTestDir(this);
-            IFullNode fullNode = this.BuildServicedNode(dir);
+            IFullNode fullNode = this.BuildStakingNode(dir);
             FullNodeController controller = fullNode.Services.ServiceProvider.GetService<FullNodeController>();
 
             Assert.NotNull(fullNode.NodeService<INetworkDifficulty>(true));

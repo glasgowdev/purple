@@ -10,7 +10,7 @@ namespace NBitcoin.Tests
     [Trait("RestClient", "RestClient")]
     public class RestClientTests
     {    
-        private static readonly Block RegNetGenesisBlock = Network.RegTest.GetGenesis();
+        private static readonly Block RegNetGenesisBlock = Network.PurpleRegTest.GetGenesis();
 
         public RestClientTests()
         {
@@ -44,7 +44,7 @@ namespace NBitcoin.Tests
                 builder.StartAll();
                 var info = client.GetChainInfoAsync().Result;
                 Assert.Equal("regtest", info.Chain);
-                Assert.Equal(new ChainedBlock(Network.RegTest.GetGenesis().Header, 0).ChainWork, info.ChainWork);
+                Assert.Equal(new ChainedBlock(Network.PurpleRegTest.GetGenesis().Header, 0).ChainWork, info.ChainWork);
                 builder.Nodes[0].Generate(10);
                 var chain = builder.Nodes[0].CreateNodeClient().GetChain();
                 info = client.GetChainInfoAsync().Result;
@@ -108,7 +108,7 @@ namespace NBitcoin.Tests
                 var client = builder.CreateNode().CreateRESTClient();
                 builder.StartAll();
                 var rpc = builder.Nodes[0].CreateRPCClient();
-                var k = new Key().GetBitcoinSecret(Network.RegTest);
+                var k = new Key().GetBitcoinSecret(Network.PurpleRegTest);
                 builder.Nodes[0].SetMinerSecret(k);
                 builder.Nodes[0].Generate(110);
 

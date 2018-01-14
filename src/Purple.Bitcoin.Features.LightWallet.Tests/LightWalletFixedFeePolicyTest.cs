@@ -75,9 +75,9 @@ namespace Purple.Bitcoin.Features.LightWallet.Tests
         public void MinTxFee_OnBitcoinNetwork_IsBitcoinDefault()
         {
             ILoggerFactory loggerFactory = new LoggerFactory();
-            NodeSettings nodeSettings = new NodeSettings(innerNetwork: Network.TestNet).LoadArguments(new string[0]);
+            NodeSettings nodeSettings = new NodeSettings(innerNetwork: Network.PurpleTest).LoadArguments(new string[0]);
             LightWalletFixedFeePolicy policy = new LightWalletFixedFeePolicy(loggerFactory, nodeSettings);
-            Assert.Equal(new FeeRate(Network.TestNet.FallbackFee), policy.FallbackTxFeeRate);
+            Assert.Equal(new FeeRate(Network.PurpleTest.FallbackFee), policy.FallbackTxFeeRate);
         }
     }
 }

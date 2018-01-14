@@ -24,7 +24,7 @@ namespace Purple.Bitcoin.Features.MemoryPool.Tests
             nodeSettings.DataDir = "Purple.Bitcoin.Features.MemoryPool.Tests/TestData/FullNodeBuilderTest/CanHaveAllServicesTest";
             var fullNodeBuilder = new FullNodeBuilder(nodeSettings);
             IFullNode fullNode = fullNodeBuilder
-                .UseConsensus()
+                .UsePurpleConsensus()
                 .UseBlockStore()
                 .UseMempool()
                 .Build();
@@ -33,7 +33,7 @@ namespace Purple.Bitcoin.Features.MemoryPool.Tests
             var network = serviceProvider.GetService<Network>();
             var settings = serviceProvider.GetService<NodeSettings>();
             var consensusLoop = serviceProvider.GetService<ConsensusLoop>();
-            var consensus = serviceProvider.GetService<PowConsensusValidator>();
+            var consensus = serviceProvider.GetService<PosConsensusValidator>();
             var chain = serviceProvider.GetService<NBitcoin.ConcurrentChain>();
             var chainState = serviceProvider.GetService<ChainState>();
             var blockStoreManager = serviceProvider.GetService<BlockStoreManager>();

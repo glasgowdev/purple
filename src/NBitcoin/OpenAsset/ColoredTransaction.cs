@@ -494,7 +494,7 @@ namespace NBitcoin.OpenAsset
 #if !NOJSONNET
         public override string ToString()
         {
-            return ToString(Network.Main);
+            return ToString(Network.PurpleMain);
         }
 
         public string ToString(Network network)

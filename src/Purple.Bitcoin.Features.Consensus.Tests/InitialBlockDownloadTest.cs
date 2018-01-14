@@ -17,7 +17,7 @@ namespace Purple.Bitcoin.Features.Consensus.Tests
 
         public InitialBlockDownloadTest()
         {
-            this.network = Network.Main;
+            this.network = Network.PurpleMain;
             this.consensusSettings = new ConsensusSettings(NodeSettings.Default(), new ExtendedLoggerFactory());
             this.checkpoints = new Checkpoints(this.network, this.consensusSettings);
             this.nodeSettings = new NodeSettings("Purple", this.network);

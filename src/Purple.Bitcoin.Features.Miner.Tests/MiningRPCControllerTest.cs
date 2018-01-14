@@ -135,7 +135,7 @@ namespace Purple.Bitcoin.Features.Miner.Tests
               .Returns(this.fixture.wallet);
 
             this.fullNode.Setup(f => f.NodeFeature<MiningFeature>(true))
-                .Returns(new MiningFeature(Network.Main, new MinerSettings(), Configuration.NodeSettings.Default(), this.LoggerFactory.Object, this.powMining.Object, this.posMinting.Object, this.walletManager.Object));
+                .Returns(new MiningFeature(Network.PurpleMain, new MinerSettings(), Configuration.NodeSettings.Default(), this.LoggerFactory.Object, this.powMining.Object, this.posMinting.Object, this.walletManager.Object));
 
             var result = this.controller.StartStaking("myWallet", "password1");
 

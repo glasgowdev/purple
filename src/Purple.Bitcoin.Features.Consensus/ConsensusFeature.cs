@@ -145,41 +145,6 @@ namespace Purple.Bitcoin.Features.Consensus
     /// </summary>
     public static class FullNodeBuilderConsensusExtension
     {
-        public static IFullNodeBuilder UseConsensus(this IFullNodeBuilder fullNodeBuilder)
-        {
-            LoggingConfiguration.RegisterFeatureNamespace<ConsensusFeature>("consensus");
-            LoggingConfiguration.RegisterFeatureClass<ConsensusStats>("bench");
-
-            fullNodeBuilder.ConfigureFeature(features =>
-            {
-                features
-                .AddFeature<ConsensusFeature>()
-                .FeatureServices(services =>
-                {
-                    // TODO: this should be set on the network build
-                    fullNodeBuilder.Network.Consensus.Options = new PowConsensusOptions();
-
-                    services.AddSingleton<ICheckpoints, Checkpoints>();
-                    services.AddSingleton<NBitcoin.Consensus.ConsensusOptions, PowConsensusOptions>();
-                    services.AddSingleton<PowConsensusValidator>();
-                    services.AddSingleton<DBreezeCoinView>();
-                    services.AddSingleton<CoinView, CachedCoinView>();
-                    services.AddSingleton<LookaheadBlockPuller>();
-                    services.AddSingleton<ConsensusLoop>();
-                    services.AddSingleton<ConsensusManager>().AddSingleton<INetworkDifficulty, ConsensusManager>();
-                    services.AddSingleton<IInitialBlockDownloadState, InitialBlockDownloadState>();
-                    services.AddSingleton<IGetUnspentTransaction, ConsensusManager>();
-                    services.AddSingleton<ConsensusController>();
-                    services.AddSingleton<ConsensusStats>();
-                    services.AddSingleton<ConsensusSettings>();
-                    services.AddSingleton<IConsensusRules, ConsensusRules>();
-                    services.AddSingleton<IRuleRegistration, CoreConsensusRules>();
-                });
-            });
-
-            return fullNodeBuilder;
-        }
-
         public static IFullNodeBuilder UsePurpleConsensus(this IFullNodeBuilder fullNodeBuilder)
         {
             LoggingConfiguration.RegisterFeatureNamespace<ConsensusFeature>("consensus");

@@ -284,7 +284,7 @@ namespace NBitcoin.Tests
                     context.Response.ContentType = PaymentRequest.MediaType;
                     PaymentRequest request = new PaymentRequest();
                     request.Details.MerchantData = BitConverter.GetBytes(businessId);
-                    request.Details.Network = Network.RegTest;
+                    request.Details.Network = Network.PurpleRegTest;
                     request.Details.Expires = expire;
                     request.Details.Time = now;
                     request.Details.PaymentUrl = new Uri(_Prefix + "?id=" + businessId + "&type=Payment");

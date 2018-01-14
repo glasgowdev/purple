@@ -30,8 +30,8 @@ namespace NBitcoin.Tests
             //TestUtils.EnsureNew("BlockDirectoryScanSpeed");
             var completeScan = Bench(() =>
             {
-                BlockStore store = new BlockStore(this.BlockStoreFolder, Network.Main);
-                //BlockStore other = new BlockStore(@"BlockDirectoryScanSpeed", Network.Main);
+                BlockStore store = new BlockStore(this.BlockStoreFolder, Network.PurpleMain);
+                //BlockStore other = new BlockStore(@"BlockDirectoryScanSpeed", Network.PurpleMain);
                 foreach(var block in store.Enumerate(false))
                 {
 
@@ -40,7 +40,7 @@ namespace NBitcoin.Tests
 
             //var headersOnlyScan = Bench(() =>
             //{
-            //    BlockStore store = new BlockStore(@"E:\Bitcoin\blocks\", Network.Main);
+            //    BlockStore store = new BlockStore(@"E:\Bitcoin\blocks\", Network.PurpleMain);
             //    var count = store.Enumerate(true).Count();
             //});
         }
@@ -60,7 +60,7 @@ namespace NBitcoin.Tests
          * TODO: Consider importing to FN.
             var complete = Bench(() =>
             {
-                using(var node = Node.Connect(Network.Main, "192.168.0.7", new NodeConnectionParameters()
+                using(var node = Node.Connect(Network.PurpleMain, "192.168.0.7", new NodeConnectionParameters()
                 {
                     IsRelay = false
                 }))
@@ -127,7 +127,7 @@ namespace NBitcoin.Tests
         {
             Stopwatch watch = new Stopwatch();
             watch.Start();
-            BlockStore store = new BlockStore(this.BlockStoreFolder, Network.Main);
+            BlockStore store = new BlockStore(this.BlockStoreFolder, Network.PurpleMain);
             IndexedBlockStore indexed = new IndexedBlockStore(new InMemoryNoSqlRepository(), store);
             indexed.ReIndex();
             watch.Stop();
@@ -146,7 +146,7 @@ namespace NBitcoin.Tests
         [Trait("Benchmark", "Benchmark")]
         public void BenchmarkCreateChainFromBlocks()
         {
-            BlockStore store = new BlockStore(this.BlockStoreFolder, Network.Main);
+            BlockStore store = new BlockStore(this.BlockStoreFolder, Network.PurpleMain);
             ConcurrentChain chain = null;
             var fullBuild = Bench(() =>
             {
@@ -157,7 +157,7 @@ namespace NBitcoin.Tests
         {
             Stopwatch watch = new Stopwatch();
             watch.Start();
-            BlockStore store = new BlockStore(this.BlockStoreFolder, Network.Main);
+            BlockStore store = new BlockStore(this.BlockStoreFolder, Network.PurpleMain);
             foreach(var txout in store.EnumerateFolder().Take(150000).SelectMany(o => o.Item.Transactions.SelectMany(t => t.Outputs)))
             {
                 act(txout);

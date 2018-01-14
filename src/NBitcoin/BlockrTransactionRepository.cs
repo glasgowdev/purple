@@ -40,7 +40,7 @@ namespace NBitcoin
         public BlockrTransactionRepository(Network network)
         {
             if(network == null)
-                network = Network.Main;
+                network = Network.PurpleMain;
             Network = network;
         }
 
@@ -136,7 +136,7 @@ namespace NBitcoin
             get
             {
                 // https cert get rejected by .net
-                return "http://" + (Network == Network.Main ? "" : "t") + "btc.blockr.io/api/v1/";
+                return "http://" + (Network == Network.PurpleMain ? "" : "t") + "btc.blockr.io/api/v1/";
             }
         }
     }

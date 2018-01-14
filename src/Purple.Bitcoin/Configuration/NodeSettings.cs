@@ -312,9 +312,9 @@ namespace Purple.Bitcoin.Configuration
             if (this.Network != null)
                 return this.Network;
 
-            return this.Testnet ? Network.TestNet :
-                this.RegTest ? Network.RegTest :
-                Network.Main;
+            return this.Testnet ? Network.PurpleTest :
+                this.RegTest ? Network.PurpleRegTest :
+                Network.PurpleMain;
         }
 
         /// <summary>

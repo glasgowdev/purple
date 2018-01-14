@@ -12,7 +12,7 @@ namespace NBitcoin.Tests
         public NodeServerTester(Network network = null)
         {
             int retry = 0;
-            network = network ?? Network.RegTest;
+            network = network ?? Network.PurpleRegTest;
             Network = network;
             while(true)
             {
@@ -198,7 +198,7 @@ namespace NBitcoin.Tests
 
             foreach(var test in tests)
             {
-                var message = Network.Main.ParseMessage(TestUtils.ParseHex(test.Message), test.Version);
+                var message = Network.PurpleMain.ParseMessage(TestUtils.ParseHex(test.Message), test.Version);
                 test.Test(message.Payload);
                 var bytes = message.ToBytes(test.Version);
                 var old = message;
@@ -282,7 +282,7 @@ namespace NBitcoin.Tests
                     act();
 
                     var unknownBlock = uint256.Parse("00000000ad262227291eaf90cafdc56a8f8451e2d7653843122c5bb0bf2dfcdd");
-                    node.SendMessageAsync(new GetDataPayload(new InventoryVector(InventoryType.MSG_FILTERED_BLOCK, Network.RegTest.GetGenesis().GetHash())));
+                    node.SendMessageAsync(new GetDataPayload(new InventoryVector(InventoryType.MSG_FILTERED_BLOCK, Network.PurpleRegTest.GetGenesis().GetHash())));
 
                     merkle = list.ReceivePayload<MerkleBlockPayload>();
                     tree = merkle.Obj.PartialMerkleTree;
@@ -331,7 +331,7 @@ namespace NBitcoin.Tests
                 cts.Cancel();
                 try
                 {
-                    var client = Node.Connect(Network.RegTest, "127.0.0.1:" + node.ProtocolPort.ToString(), new NodeConnectionParameters()
+                    var client = Node.Connect(Network.PurpleRegTest, "127.0.0.1:" + node.ProtocolPort.ToString(), new NodeConnectionParameters()
                     {
                         ConnectCancellation = cts.Token
                     });
@@ -353,7 +353,7 @@ namespace NBitcoin.Tests
                 node.ConfigParameters.Add("whitelist", "127.0.0.1");
                 node.Start();
                 node.Generate(101);
-                node.CreateRPCClient().SendToAddress(new Key().PubKey.GetAddress(Network.RegTest), Money.Coins(1.0m));
+                node.CreateRPCClient().SendToAddress(new Key().PubKey.GetAddress(Network.PurpleRegTest), Money.Coins(1.0m));
                 var client = node.CreateNodeClient();
                 client.VersionHandshake();
                 var transactions = client.GetMempoolTransactions();
@@ -393,7 +393,7 @@ namespace NBitcoin.Tests
                 node.Start();
                 node.Generate(102);
                 for(int i = 0; i < 2; i++)
-                    node.CreateRPCClient().SendToAddress(new Key().PubKey.GetAddress(Network.RegTest), Money.Coins(1.0m));
+                    node.CreateRPCClient().SendToAddress(new Key().PubKey.GetAddress(Network.PurpleRegTest), Money.Coins(1.0m));
                 var client = node.CreateNodeClient();
                 var txIds = client.GetMempool();
                 Assert.True(txIds.Length == 2);
@@ -406,7 +406,7 @@ namespace NBitcoin.Tests
         {
             using(var builder = NodeBuilder.Create())
             {
-                ConcurrentChain chain = new ConcurrentChain(Network.RegTest);
+                ConcurrentChain chain = new ConcurrentChain(Network.PurpleRegTest);
                 var node1 = builder.CreateNode(true);
                 node1.CreateRPCClient().Generate(10);
                 node1.CreateNodeClient().SynchronizeChain(chain);
@@ -638,7 +638,7 @@ namespace NBitcoin.Tests
                 node.VersionHandshake();
                 node.SendMessageAsync(new GetDataPayload(new InventoryVector()
                 {
-                    Hash = Network.RegTest.GenesisHash,
+                    Hash = Network.PurpleRegTest.GenesisHash,
                     Type = InventoryType.MSG_BLOCK
                 }));
 

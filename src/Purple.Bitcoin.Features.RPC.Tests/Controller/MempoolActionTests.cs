@@ -13,7 +13,7 @@ namespace Purple.Bitcoin.Features.RPC.Tests.Controller
         public async Task CanCall_GetRawMempoolAsync()
         {
             string dir = CreateTestDir(this);
-            IFullNode fullNode = this.BuildServicedNode(dir);
+            IFullNode fullNode = this.BuildStakingNode(dir);
             MempoolController controller = fullNode.Services.ServiceProvider.GetService<MempoolController>();
 
             List<uint256> result = await controller.GetRawMempool();

@@ -196,7 +196,7 @@ namespace Purple.Bitcoin.IntegrationTests
             this.PurplePowNode = this.builder.CreatePurplePowNode(false, fullNodeBuilder =>
             {
                 fullNodeBuilder
-               .UseConsensus()
+               .UsePurpleConsensus()
                .UseBlockStore()
                .UseMempool()
                .AddMining()

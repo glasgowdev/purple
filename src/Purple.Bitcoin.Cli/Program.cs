@@ -87,24 +87,9 @@ namespace Purple.Bitcoin.Cli
                 }
 
                 // Determine API port.
-                string blockchain = string.Empty;
-                int defaultRestApiPort = 0;
-                Network network = null;
-
-                if (networkName.Contains("Purple"))
-                {
-                    blockchain = "Purple";
-                    defaultRestApiPort = 37221;
-                    network = Network.PurpleMain;
-                }
-                else
-                {
-                    blockchain = "bitcoin";
-                    defaultRestApiPort = 37220;
-                    network = Network.Main;
-                }
-
-
+                string blockchain = "Purple";
+                int defaultRestApiPort = 37221;
+                Network network = Network.PurpleMain;
 
                 // API calls require both the contoller name and the method name separated by "/".
                 // If this is not an API call then assume it is an RPC call.

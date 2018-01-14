@@ -121,7 +121,7 @@ namespace Purple.Bitcoin.IntegrationTests.EnvironmentMockUpHelpers
 
         public RPCClient CreateRPCClient()
         {
-            return new RPCClient(this.creds, new Uri("http://127.0.0.1:" + this.ports[1].ToString() + "/"), Network.RegTest);
+            return new RPCClient(this.creds, new Uri("http://127.0.0.1:" + this.ports[1].ToString() + "/"), Network.PurpleRegTest);
         }
 
         public RestClient CreateRESTClient()
@@ -131,7 +131,7 @@ namespace Purple.Bitcoin.IntegrationTests.EnvironmentMockUpHelpers
 
         public NetworkPeer CreateNetworkPeerClient()
         {
-            return this.networkPeerFactory.CreateConnectedNetworkPeerAsync(Network.RegTest, "127.0.0.1:" + this.ports[0].ToString()).GetAwaiter().GetResult();
+            return this.networkPeerFactory.CreateConnectedNetworkPeerAsync(Network.PurpleRegTest, "127.0.0.1:" + this.ports[0].ToString()).GetAwaiter().GetResult();
         }
 
         public async Task StartAsync()

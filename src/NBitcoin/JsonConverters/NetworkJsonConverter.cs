@@ -26,11 +26,11 @@ namespace NBitcoin.JsonConverters
             if (network == null)
                 return null;
             if (network.Equals("MainNet", StringComparison.OrdinalIgnoreCase) || network.Equals("main", StringComparison.OrdinalIgnoreCase))
-                return Network.Main;
+                return Network.PurpleMain;
             if (network.Equals("TestNet", StringComparison.OrdinalIgnoreCase) || network.Equals("test", StringComparison.OrdinalIgnoreCase))
-                return Network.TestNet;
+                return Network.PurpleTest;
             if(network.Equals("RegTest", StringComparison.OrdinalIgnoreCase) || network.Equals("reg", StringComparison.OrdinalIgnoreCase))
-                return Network.RegTest;
+                return Network.PurpleRegTest;
             var net = Network.GetNetwork(network);
             if(net != null)
                 return net;
@@ -41,11 +41,11 @@ namespace NBitcoin.JsonConverters
         {
             var net = (Network)value;
             String str = null;
-            if(net == Network.Main)
+            if(net == Network.PurpleMain)
                 str = "MainNet";
-            else if(net == Network.TestNet)
+            else if(net == Network.PurpleTest)
                 str = "TestNet";
-            else if(net == Network.RegTest)
+            else if(net == Network.PurpleRegTest)
                 str = "RegTest";
             else if(net != null)
                 str = net.ToString();

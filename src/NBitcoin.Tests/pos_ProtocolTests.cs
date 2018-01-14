@@ -167,7 +167,7 @@ namespace NBitcoin.Tests
                     act();
 
                     var unknownBlock = uint256.Parse("00000000ad262227291eaf90cafdc56a8f8451e2d7653843122c5bb0bf2dfcdd");
-                    node.SendMessageAsync(new GetDataPayload(new InventoryVector(InventoryType.MSG_FILTERED_BLOCK, Network.RegTest.GetGenesis().GetHash())));
+                    node.SendMessageAsync(new GetDataPayload(new InventoryVector(InventoryType.MSG_FILTERED_BLOCK, Network.PurpleRegTest.GetGenesis().GetHash())));
 
                     merkle = list.ReceivePayload<MerkleBlockPayload>();
                     tree = merkle.Obj.PartialMerkleTree;
@@ -258,7 +258,7 @@ namespace NBitcoin.Tests
                 //node.Start();
                 //node.Generate(102);
                 //for (int i = 0; i < 2; i++)
-                //    node.CreateRPCClient().SendToAddress(new Key().PubKey.GetAddress(Network.RegTest), Money.Coins(1.0m));
+                //    node.CreateRPCClient().SendToAddress(new Key().PubKey.GetAddress(Network.PurpleRegTest), Money.Coins(1.0m));
                 var client = node.CreateNodeClient();
                 var txIds = client.GetMempool();
                 Assert.NotNull(txIds); //.True(txIds.Length == 2);

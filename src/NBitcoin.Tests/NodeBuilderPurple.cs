@@ -223,7 +223,7 @@ namespace NBitcoin.Tests
 
         public RPCClient CreateRPCClient()
         {
-            //return new RPCClient(creds, new Uri("http://127.0.0.1:" + ports[1].ToString() + "/"), Network.RegTest);
+            //return new RPCClient(creds, new Uri("http://127.0.0.1:" + ports[1].ToString() + "/"), Network.PurpleRegTest);
             // currently only use mainnet
             // credentials should be set in advance
             return new RPCClient(new NetworkCredential("rpcuser", "rpcpassword"), new Uri("http://127.0.0.1:" + Network.PurpleMain.RPCPort + "/"), Network.PurpleMain);
@@ -242,7 +242,7 @@ namespace NBitcoin.Tests
         }
         public Node CreateNodeClient(NodeConnectionParameters parameters)
         {
-            return Node.Connect(Network.RegTest, "127.0.0.1:" + ports[0].ToString(), parameters);
+            return Node.Connect(Network.PurpleRegTest, "127.0.0.1:" + ports[0].ToString(), parameters);
         }
         */
 

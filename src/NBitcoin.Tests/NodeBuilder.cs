@@ -300,7 +300,7 @@ namespace NBitcoin.Tests
         readonly NetworkCredential creds;
         public RPCClient CreateRPCClient()
         {
-            return new RPCClient(GetRPCAuth(), new Uri("http://127.0.0.1:" + ports[1].ToString() + "/"), Network.RegTest);
+            return new RPCClient(GetRPCAuth(), new Uri("http://127.0.0.1:" + ports[1].ToString() + "/"), Network.PurpleRegTest);
         }
 
         public RestClient CreateRESTClient()
@@ -312,11 +312,11 @@ namespace NBitcoin.Tests
          * TODO: Consider importing to FN.
         public Node CreateNodeClient()
         {
-            return Node.Connect(Network.RegTest, "127.0.0.1:" + ports[0].ToString());
+            return Node.Connect(Network.PurpleRegTest, "127.0.0.1:" + ports[0].ToString());
         }
         public Node CreateNodeClient(NodeConnectionParameters parameters)
         {
-            return Node.Connect(Network.RegTest, "127.0.0.1:" + ports[0].ToString(), parameters);
+            return Node.Connect(Network.PurpleRegTest, "127.0.0.1:" + ports[0].ToString(), parameters);
         }
         */
 #endif

@@ -17,7 +17,7 @@ namespace Purple.Bitcoin.Features.RPC.Tests
 
             var node = new FullNodeBuilder()
                 .UseNodeSettings(nodeSettings)
-                .UseConsensus()
+                .UsePurpleConsensus()
                 .AddRPC(x =>
                 {
                     x.RpcUser = "abc";
