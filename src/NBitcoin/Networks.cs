@@ -70,11 +70,11 @@ namespace NBitcoin
             // The characters are rarely used upper ASCII, not valid as UTF-8, and produce
             // a large 4-byte int at any alignment.
             var messageStart = new byte[4];
-            messageStart[0] = 0x70;
-            messageStart[1] = 0x35;
-            messageStart[2] = 0x22;
-            messageStart[3] = 0x05;
-            var magic = BitConverter.ToUInt32(messageStart, 0); //0x5223570; 
+            messageStart[0] = 0x11;
+            messageStart[1] = 0x10;
+            messageStart[2] = 0x19;
+            messageStart[3] = 0x07;
+            var magic = BitConverter.ToUInt32(messageStart, 0); 
 
             Assert(consensus.HashGenesisBlock == uint256.Parse("0x"));
             Assert(genesis.Header.HashMerkleRoot == uint256.Parse("0x"));
@@ -140,10 +140,10 @@ namespace NBitcoin
             // The characters are rarely used upper ASCII, not valid as UTF-8, and produce
             // a large 4-byte int at any alignment.
             var messageStart = new byte[4];
-            messageStart[0] = 0x71;
-            messageStart[1] = 0x31;
-            messageStart[2] = 0x21;
-            messageStart[3] = 0x11;
+            messageStart[0] = 0x16;
+            messageStart[1] = 0x24;
+            messageStart[2] = 0x43;
+            messageStart[3] = 0x04;
             var magic = BitConverter.ToUInt32(messageStart, 0); //0x5223570; 
 
             var genesis = Network.PurpleMain.GetGenesis();
@@ -198,10 +198,10 @@ namespace NBitcoin
             consensus.PowNoRetargeting = true;
 
             var messageStart = new byte[4];
-            messageStart[0] = 0xcd;
-            messageStart[1] = 0xf2;
-            messageStart[2] = 0xc0;
-            messageStart[3] = 0xef;
+            messageStart[0] = 0xdd;
+            messageStart[1] = 0xd6;
+            messageStart[2] = 0xea;
+            messageStart[3] = 0xf7;
             var magic = BitConverter.ToUInt32(messageStart, 0);
 
             var genesis = Network.PurpleMain.GetGenesis();
