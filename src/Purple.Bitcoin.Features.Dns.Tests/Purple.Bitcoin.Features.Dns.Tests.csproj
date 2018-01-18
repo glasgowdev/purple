@@ -34,6 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\HashLib\HashLib.csproj" />
     <ProjectReference Include="..\Purple.Bitcoin.Features.Dns\Purple.Bitcoin.Features.Dns.csproj" />
     <ProjectReference Include="..\Purple.Bitcoin.Tests\Purple.Bitcoin.Tests.csproj" />
   </ItemGroup>

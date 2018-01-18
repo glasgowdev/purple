@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\HashLib\HashLib.csproj" />
     <ProjectReference Include="..\Purple.Bitcoin\Purple.Bitcoin.csproj" />
   </ItemGroup>
   

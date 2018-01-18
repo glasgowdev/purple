@@ -1,7 +1,10 @@
 using System;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading.Tasks;
 using NBitcoin;
+using NBitcoin.DataEncoders;
 using NBitcoin.Protocol;
 using Purple.Bitcoin.Builder;
 using Purple.Bitcoin.Configuration;

@@ -32,11 +32,14 @@ namespace Purple.Bitcoin.Features.Consensus
 
             this.ProofOfWorkReward = Money.Coins(4);
             this.ProofOfStakeReward = Money.COIN;
-            this.PremineReward = Money.Coins(98000000);
+
+            this.PremineReward = Money.Coins(10000000);
             this.PremineHeight = 2;
+
             this.StakeMinConfirmations = 50;
-            this.StakeMinAge = 60;
+            this.StakeMinAge = 30;
             this.StakeModifierInterval = 10 * 60;
+
             this.MaxReorgLength = 500;
         }
     }

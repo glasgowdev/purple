@@ -29,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\HashLib\HashLib.csproj" />
     <ProjectReference Include="..\NBitcoin\NBitcoin.csproj" />
     <ProjectReference Include="..\Purple.Bitcoin.Features.MemoryPool\Purple.Bitcoin.Features.MemoryPool.csproj" />
     <ProjectReference Include="..\Purple.Bitcoin.Features.RPC\Purple.Bitcoin.Features.RPC.csproj" />
