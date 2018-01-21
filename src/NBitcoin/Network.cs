@@ -385,14 +385,14 @@ namespace NBitcoin
                 network.fixedSeeds.Add(seed);
             }
 
-            network.base58Prefixes = Network.PurpleMain.base58Prefixes.ToArray();
+            //network.base58Prefixes = Network.PurpleMain.base58Prefixes.ToArray();
 
             foreach (KeyValuePair<Base58Type, byte[]> kv in builder.Base58Prefixes)
             {
                 network.base58Prefixes[(int) kv.Key] = kv.Value;
             }
 
-            network.bech32Encoders = Network.PurpleMain.bech32Encoders.ToArray();
+            //network.bech32Encoders = Network.PurpleMain.bech32Encoders.ToArray();
 
             foreach (KeyValuePair<Bech32Type, Bech32Encoder> kv in builder.Bech32Prefixes)
             {
