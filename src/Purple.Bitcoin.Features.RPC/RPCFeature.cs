@@ -9,6 +9,7 @@ using Purple.Bitcoin.Configuration.Logging;
 using Purple.Bitcoin.Connection;
 using Purple.Bitcoin.Features.Consensus;
 using Purple.Bitcoin.Features.RPC.Controllers;
+using Purple.Bitcoin.Mining;
 
 namespace Purple.Bitcoin.Features.RPC
 {
@@ -98,6 +99,7 @@ namespace Purple.Bitcoin.Features.RPC
             {
                 service.AddSingleton<FullNodeController>();
                 service.AddSingleton<ConnectionManagerController>();
+                service.AddSingleton<MiningController>();
                 service.AddSingleton<RpcSettings>(new RpcSettings(setup));
                 service.AddSingleton<RPCController>();
             });

@@ -35,7 +35,7 @@ namespace NBitcoin.Crypto
                 software_hash(input, input.Length, buffer);
             }
 
-            return new uint256(buffer.Take(32).ToArray(), false);
+            return new uint256(buffer.Take(32).ToArray(), true);
         }
     }
 }

@@ -190,7 +190,7 @@ namespace NBitcoin
 
             // Assert(consensus.HashGenesisBlock == uint256.Parse("0x"));
 
-            consensus.DefaultAssumeValid = new uint256("0x12ae16993ce7f0836678f225b2f4b38154fa923bd1888f7490051ddaf4e9b7fa"); // 218810
+            consensus.DefaultAssumeValid = new uint256("0x8c2cf95f9ca72e13c8c4cdf15c2d7cc49993946fb49be4be147e106d502f1869"); // 218810
 
             var builder = new NetworkBuilder()
                 .SetName("PurpleTest")
@@ -200,9 +200,9 @@ namespace NBitcoin
                 .SetPort(26178)
                 .SetRPCPort(26174)
                 .SetTxFees(10000, 60000, 10000)
-                .SetBase58Bytes(Base58Type.PUBKEY_ADDRESS, new byte[] { (65) })
-                .SetBase58Bytes(Base58Type.SCRIPT_ADDRESS, new byte[] { (196) })
-                .SetBase58Bytes(Base58Type.SECRET_KEY, new byte[] { (65 + 128) })
+                .SetBase58Bytes(Base58Type.PUBKEY_ADDRESS, new byte[] { (51) })
+                .SetBase58Bytes(Base58Type.SCRIPT_ADDRESS, new byte[] { (125) })
+                .SetBase58Bytes(Base58Type.SECRET_KEY, new byte[] { (63 + 128) })
                 .SetBase58Bytes(Base58Type.ENCRYPTED_SECRET_KEY_NO_EC, new byte[] { 0x01, 0x42 })
                 .SetBase58Bytes(Base58Type.ENCRYPTED_SECRET_KEY_EC, new byte[] { 0x01, 0x43 })
                 .SetBase58Bytes(Base58Type.EXT_PUBLIC_KEY, new byte[] { (0x04), (0x88), (0xB2), (0x1E) })
@@ -242,14 +242,14 @@ namespace NBitcoin
 
             var genesis = Network.PurpleMain.GetGenesis();
             genesis.Header.Time = 1515944354;
-            genesis.Header.Nonce = 0;
+            genesis.Header.Nonce = 2;
             genesis.Header.Bits = consensus.PowLimit;
 
             MineNonce(consensus, genesis);
 
-            consensus.HashGenesisBlock = genesis.GetHash(consensus.NetworkOptions);
+            // consensus.HashGenesisBlock = genesis.GetHash(consensus.NetworkOptions);
 
-            Assert(consensus.HashGenesisBlock == uint256.Parse("0x67e2cad5767de4b4e7dc6f77a96fd4afb873da525b61019c650093c1ec111465"));
+            Assert(consensus.HashGenesisBlock == uint256.Parse("0xad2f88b88646fb636a1d2a7e5ba84a4662ded8a405d39ac7de087e907c1fd4a4"));
 
             consensus.DefaultAssumeValid = null; // turn off assumevalid for regtest.
 
@@ -260,9 +260,9 @@ namespace NBitcoin
                 .SetGenesis(genesis)
                 .SetPort(18444)
                 .SetRPCPort(18442)
-                .SetBase58Bytes(Base58Type.PUBKEY_ADDRESS, new byte[] { (65) })
-                .SetBase58Bytes(Base58Type.SCRIPT_ADDRESS, new byte[] { (196) })
-                .SetBase58Bytes(Base58Type.SECRET_KEY, new byte[] { (65 + 128) })
+                .SetBase58Bytes(Base58Type.PUBKEY_ADDRESS, new byte[] { (51) })
+                .SetBase58Bytes(Base58Type.SCRIPT_ADDRESS, new byte[] { (125) })
+                .SetBase58Bytes(Base58Type.SECRET_KEY, new byte[] { (63 + 128) })
                 .SetBase58Bytes(Base58Type.ENCRYPTED_SECRET_KEY_NO_EC, new byte[] { 0x01, 0x42 })
                 .SetBase58Bytes(Base58Type.ENCRYPTED_SECRET_KEY_EC, new byte[] { 0x01, 0x43 })
                 .SetBase58Bytes(Base58Type.EXT_PUBLIC_KEY, new byte[] { (0x04), (0x88), (0xB2), (0x1E) })

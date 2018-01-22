@@ -45,7 +45,7 @@ namespace NBitcoin.RPC
         blockchain         getdifficulty
         blockchain         getmempoolinfo
         blockchain         getrawmempool                Yes
-        blockchain         gettxout                    Yes
+        blockchain         gettxout                     Yes
         blockchain         gettxoutproof
         blockchain         verifytxoutproof
         blockchain         gettxoutsetinfo

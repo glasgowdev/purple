@@ -148,7 +148,7 @@ namespace NBitcoin
 
         public uint256 GetPoWHash()
         {
-            return HashX13.Instance.Hash(this.ToBytes());
+            return CryptoNight.Instance.Hash(this.ToBytes());
         }
 
         /// <summary>
