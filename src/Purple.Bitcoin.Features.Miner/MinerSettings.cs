@@ -27,6 +27,11 @@ namespace Purple.Bitcoin.Features.Miner
         public string MineAddress { get; set; }
 
         /// <summary>
+        /// The CPU percentage to use for POW mining.
+        /// </summary>
+        public double MineCpuPercentage { get; private set; }
+
+        /// <summary>
         /// The wallet password needed when staking to sign blocks.
         /// </summary>
         public string WalletPassword { get; set; }
@@ -67,7 +72,11 @@ namespace Purple.Bitcoin.Features.Miner
 
             this.Mine = config.GetOrDefault<bool>("mine", false);
             if (this.Mine)
+            {
                 this.MineAddress = config.GetOrDefault<string>("mineaddress", null);
+            }
+
+            this.MineCpuPercentage = GetCpuPercentage(config); 
 
             this.Stake = config.GetOrDefault<bool>("stake", false);
             if (this.Stake)
@@ -79,6 +88,22 @@ namespace Purple.Bitcoin.Features.Miner
             this.callback?.Invoke(this);
         }
 
+        private static double GetCpuPercentage(TextFileConfiguration config)
+        {
+            int percentage = config.GetOrDefault<int>("minecpupercentage", 50);
+            if (percentage < 10)
+            {
+                percentage = 10;
+            }
+
+            if (percentage > 100)
+            {
+                percentage = 100;
+            }
+
+            return percentage / (double)100;
+        }
+
         /// <summary>
         /// Displays mining help information on the console.
         /// </summary>
@@ -88,11 +113,12 @@ namespace Purple.Bitcoin.Features.Miner
             var defaults = NodeSettings.Default();
             var builder = new StringBuilder();
 
-            builder.AppendLine("-mine=<0 or 1>            Enable POW mining.");
-            builder.AppendLine("-stake=<0 or 1>           Enable POS.");
-            builder.AppendLine("-mineaddress=<string>     The address to use for mining (empty string to select an address from the wallet).");
-            builder.AppendLine("-walletname=<string>      The wallet name to use when staking.");
-            builder.AppendLine("-walletpassword=<string>  Password to unlock the wallet.");
+            builder.AppendLine("-mine=<0 or 1>              Enable POW mining.");
+            builder.AppendLine("-stake=<0 or 1>             Enable POS.");
+            builder.AppendLine("-mineaddress=<string>       The address to use for mining (empty string to select an address from the wallet).");
+            builder.AppendLine("-minecpupercentage=<10-100> CPU percentage to use for POW mining (default 50%).");
+            builder.AppendLine("-walletname=<string>        The wallet name to use when staking.");
+            builder.AppendLine("-walletpassword=<string>    Password to unlock the wallet.");
 
             defaults.Logger.LogInformation(builder.ToString());
         }

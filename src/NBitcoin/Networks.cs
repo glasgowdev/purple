@@ -39,21 +39,19 @@ namespace NBitcoin
             consensus.NetworkOptions = new NetworkOptions() { IsProofOfStake = true };
 
             consensus.GetPoWHash = (n, h) => Crypto.CryptoNight.Instance.Hash(h.ToBytes(options: n));
-            // consensus.GetPoWHash = (n, h) => Crypto.HashX13.Instance.Hash(h.ToBytes(options: n)); //2718417
-            // consensus.GetPoWHash = (n, h) => Crypto.HashX15.Instance.Hash(h.ToBytes(options: n)); //1482006
 
             consensus.SubsidyHalvingInterval = 262800;
             consensus.MajorityEnforceBlockUpgrade = 750;
             consensus.MajorityRejectBlockOutdated = 950;
             consensus.MajorityWindow = 1000;
-            consensus.BuriedDeployments[BuriedDeployments.BIP34] = 227931;
-            consensus.BuriedDeployments[BuriedDeployments.BIP65] = 388381;
-            consensus.BuriedDeployments[BuriedDeployments.BIP66] = 363725;
-            consensus.BIP34Hash = new uint256("0x00000456608ac183cb8084467363280cf09c1f43531f79569a92d2992929760b");
-            consensus.PowLimit = new Target(new uint256("000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"));
+            consensus.BuriedDeployments[BuriedDeployments.BIP34] = 0;
+            consensus.BuriedDeployments[BuriedDeployments.BIP65] = 0;
+            consensus.BuriedDeployments[BuriedDeployments.BIP66] = 0;
+            consensus.BIP34Hash = new uint256("0x00000301683c2faabee07661d29ad2d873b5274464fcea1f300912467d53ac1d");
+            consensus.PowLimit = new Target(new uint256("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"));
             consensus.PowTargetTimespan = TimeSpan.FromSeconds(24 * 60 * 60); // 1 day
             consensus.PowTargetSpacing = TimeSpan.FromSeconds(2 * 60); // 2 minutes
-            consensus.PowAllowMinDifficultyBlocks = true;
+            consensus.PowAllowMinDifficultyBlocks = false;
             consensus.PowNoRetargeting = false;
             consensus.RuleChangeActivationThreshold = 684; // 95% of 720
             consensus.MinerConfirmationWindow = 720; // nPowTargetTimespan / nPowTargetSpacing
@@ -62,31 +60,27 @@ namespace NBitcoin
             consensus.BIP9Deployments[BIP9Deployments.CSV] = new BIP9DeploymentsParameters(0, 0, 0);
             consensus.BIP9Deployments[BIP9Deployments.Segwit] = new BIP9DeploymentsParameters(1, 0, 0);
 
-            consensus.LastPOWBlock = 1314000;
+            consensus.LastPOWBlock = 1324000;
 
             consensus.ProofOfStakeLimit = new BigInteger(uint256.Parse("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff").ToBytes(false));
             consensus.ProofOfStakeLimitV2 = new BigInteger(uint256.Parse("000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffff").ToBytes(false));
 
             consensus.CoinType = 174;
 
-            consensus.DefaultAssumeValid = new uint256("0x8c2cf95f9ca72e13c8c4cdf15c2d7cc49993946fb49be4be147e106d502f1869"); // 642930
+            consensus.DefaultAssumeValid = new uint256("0x00000301683c2faabee07661d29ad2d873b5274464fcea1f300912467d53ac1d");
 
-            Block genesis = CreateGenesisBlock(1515944103, 0, consensus.PowLimit, 1, Money.Zero);
-            // MineNonce(consensus, genesis);
+            Block genesis = CreateGenesisBlock(1515944103, 51454, consensus.PowLimit, 1, Money.Zero);
             consensus.HashGenesisBlock = genesis.GetHash(consensus.NetworkOptions);
 
-            // The message start string is designed to be unlikely to occur in normal data.
-            // The characters are rarely used upper ASCII, not valid as UTF-8, and produce
-            // a large 4-byte int at any alignment.
+            Assert(consensus.HashGenesisBlock == uint256.Parse("0x00000301683c2faabee07661d29ad2d873b5274464fcea1f300912467d53ac1d"));
+            Assert(genesis.Header.HashMerkleRoot == uint256.Parse("0xe0c01fb7ea26f7de5cc362056b01fd8de036c1a166d355e6f07bbf2dfab1c4ee"));
+
             var messageStart = new byte[4];
             messageStart[0] = 0x11;
             messageStart[1] = 0x10;
             messageStart[2] = 0x19;
             messageStart[3] = 0x07;
             var magic = BitConverter.ToUInt32(messageStart, 0);
-
-            //Assert(consensus.HashGenesisBlock == uint256.Parse("0x"));
-            //Assert(genesis.Header.HashMerkleRoot == uint256.Parse("0x"));
 
             var builder = new NetworkBuilder()
                 .SetName("PurpleMain")
@@ -137,30 +131,6 @@ namespace NBitcoin
             return builder.BuildAndRegister();
         }
 
-        private static void MineNonce(Consensus consensus, Block genesis)
-        {
-            if (genesis.Header.Nonce == 0)
-            {
-                uint nonce = 0;
-                uint last = 0;
-                var watch = new Stopwatch();
-                watch.Start();
-                while (!genesis.CheckProofOfWork(consensus))
-                {
-                    genesis.Header.Nonce = ++nonce;
-                    if (watch.ElapsedMilliseconds > 1000)
-                    {
-                        Console.WriteLine($"{nonce - last} H/s");
-                        Debug.WriteLine(nonce);
-                        last = nonce;
-                        watch.Restart();
-                    }
-                }
-                watch.Stop();
-                genesis.Header.CacheHashes();
-            }
-        }
-
         private static Network InitPurpleTest()
         {
             Block.BlockSignature = true;
@@ -168,6 +138,7 @@ namespace NBitcoin
 
             var consensus = Network.PurpleMain.Consensus.Clone();
             consensus.PowLimit = new Target(uint256.Parse("0000ffff00000000000000000000000000000000000000000000000000000000"));
+            consensus.DefaultAssumeValid = new uint256("0x0000f7d14f2c4e337ec16f0a22bc51d605d66bee7d61a7dfbba81255d0980c50");
 
             // The message start string is designed to be unlikely to occur in normal data.
             // The characters are rarely used upper ASCII, not valid as UTF-8, and produce
@@ -181,16 +152,12 @@ namespace NBitcoin
 
             var genesis = Network.PurpleMain.GetGenesis();
             genesis.Header.Time = 1515944095;
-            genesis.Header.Nonce = 0;
+            genesis.Header.Nonce = 42735;
             genesis.Header.Bits = consensus.PowLimit;
-
-            // MineNonce(consensus, genesis);
 
             consensus.HashGenesisBlock = genesis.GetHash(consensus.NetworkOptions);
 
-            // Assert(consensus.HashGenesisBlock == uint256.Parse("0x"));
-
-            consensus.DefaultAssumeValid = new uint256("0x8c2cf95f9ca72e13c8c4cdf15c2d7cc49993946fb49be4be147e106d502f1869"); // 218810
+            Assert(consensus.HashGenesisBlock == uint256.Parse("0x0000f7d14f2c4e337ec16f0a22bc51d605d66bee7d61a7dfbba81255d0980c50"));
 
             var builder = new NetworkBuilder()
                 .SetName("PurpleTest")
@@ -245,11 +212,9 @@ namespace NBitcoin
             genesis.Header.Nonce = 2;
             genesis.Header.Bits = consensus.PowLimit;
 
-            MineNonce(consensus, genesis);
+            consensus.HashGenesisBlock = genesis.GetHash(consensus.NetworkOptions);
 
-            // consensus.HashGenesisBlock = genesis.GetHash(consensus.NetworkOptions);
-
-            Assert(consensus.HashGenesisBlock == uint256.Parse("0xad2f88b88646fb636a1d2a7e5ba84a4662ded8a405d39ac7de087e907c1fd4a4"));
+            Assert(consensus.HashGenesisBlock == uint256.Parse("0x59b6c7ad17bd6f16cdc68e4e5e41aad885bbc8b973c7d589b5ef726d39d29360"));
 
             consensus.DefaultAssumeValid = null; // turn off assumevalid for regtest.
 

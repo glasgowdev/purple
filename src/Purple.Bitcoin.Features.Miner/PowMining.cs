@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using NBitcoin;
@@ -44,6 +46,9 @@ namespace Purple.Bitcoin.Features.Miner
         /// <summary>Manager of the longest fully validated chain of blocks.</summary>
         private readonly ConsensusLoop consensusLoop;
 
+        /// <summary>Settings relevant to mining or staking.</summary>
+        private readonly MinerSettings minerSettings;
+
         private readonly ConcurrentChain chain;
 
         private readonly Network network;
@@ -66,12 +71,14 @@ namespace Purple.Bitcoin.Features.Miner
             ConsensusLoop consensusLoop,
             ConcurrentChain chain,
             Network network,
+            MinerSettings minerSettings,
             AssemblerFactory blockAssemblerFactory,
             INodeLifetime nodeLifetime,
             IAsyncLoopFactory asyncLoopFactory,
             ILoggerFactory loggerFactory)
         {
             this.consensusLoop = consensusLoop;
+            this.minerSettings = minerSettings;
             this.chain = chain;
             this.network = network;
             this.blockAssemblerFactory = blockAssemblerFactory;
@@ -137,13 +144,54 @@ namespace Purple.Bitcoin.Features.Miner
                 this.IncrementExtraNonce(pblockTemplate.Block, chainTip, nExtraNonce);
                 Block pblock = pblockTemplate.Block;
 
-                while ((maxTries > 0) && (pblock.Header.Nonce < InnerLoopCount) && !pblock.CheckProofOfWork(this.network.Consensus))
+                var retries = (int)maxTries;
+
+                var options = new ParallelOptions
+                {
+                    MaxDegreeOfParallelism = Convert.ToInt32(Math.Ceiling((Environment.ProcessorCount * this.minerSettings.MineCpuPercentage) * 1.0)) - 2
+                };
+
+                Parallel.ForEach(Enumerable.Range(0, InnerLoopCount), options, (i, state) =>
                 {
                     this.nodeLifetime.ApplicationStopping.ThrowIfCancellationRequested();
 
-                    ++pblock.Header.Nonce;
-                    --maxTries;
-                }
+                    if (state.IsStopped || state.ShouldExitCurrentIteration)
+                    {
+                        return;
+                    }
+
+                    if (retries == 0)
+                    {
+                        state.Break();
+                    }
+
+                    if (i == InnerLoopCount)
+                    {
+                        pblock.Header.Nonce = InnerLoopCount;
+                        state.Break();
+                    }
+
+                    BlockHeader header = pblock.Header.Clone();
+                    header.Nonce = (uint)i;
+
+                    if (header.CheckProofOfWork(this.network.Consensus))
+                    {
+                        pblock.Header.Nonce = (uint)i;
+                        state.Break();
+                    }
+
+                    Interlocked.Decrement(ref retries);
+                });
+
+                maxTries = (ulong)retries;
+
+                //while ((maxTries > 0) && (pblock.Header.Nonce < InnerLoopCount) && !pblock.CheckProofOfWork(this.network.Consensus))
+                //{
+                //    this.nodeLifetime.ApplicationStopping.ThrowIfCancellationRequested();
+
+                //    ++pblock.Header.Nonce;
+                //    --maxTries;
+                //}
 
                 if (maxTries == 0)
                     break;

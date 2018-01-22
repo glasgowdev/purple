@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using NBitcoin.BouncyCastle.Math;
 using NBitcoin.Crypto;
 using NBitcoin.DataEncoders;
@@ -363,6 +364,37 @@ namespace NBitcoin
         {
             return this.Header.HashMerkleRoot == GetMerkleRoot().Hash;
         }
+
+        public void CalculateProofOfWork(Consensus consensus)
+        {
+            if (this.header.Nonce > 0)
+            {
+                return;
+            }
+
+            uint nonce = 0;
+
+            var options = new ParallelOptions
+            {
+                MaxDegreeOfParallelism = Convert.ToInt32(Math.Ceiling((Environment.ProcessorCount * 0.8) * 1.0))
+            };
+
+            Parallel.ForEach(Enumerable.Range(0, int.MaxValue), options, (i, state) =>
+            {
+                BlockHeader tmp = this.header.Clone();
+                tmp.Nonce = (uint)i;
+                if (state.IsStopped || state.ShouldExitCurrentIteration || !tmp.CheckProofOfWork(consensus))
+                {
+                    return;
+                }
+                nonce = tmp.Nonce;
+                state.Break();
+            });
+
+            this.header.Nonce = nonce;
+            this.header.CacheHashes();
+        }
+
 
         public Block CreateNextBlockWithCoinbase(BitcoinAddress address, int height)
         {

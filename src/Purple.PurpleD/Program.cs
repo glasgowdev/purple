@@ -37,11 +37,12 @@ namespace Purple.PurpleD
                 args = new List<string>(args)
                 {
                     "mine=1",
-                    "mineaddress=MbPPopMepRTPQVJvohuKAjdZ66dw1ADKda"
+                    "mineaddress=MbPPopMepRTPQVJvohuKAjdZ66dw1ADKda",
+                    "minecpupercentage=100"
                 }.ToArray();
 
                 // Network network = args.Contains("-testnet") ? Network.PurpleTest : Network.PurpleMain;
-                Network network = Network.PurpleRegTest;
+                Network network = Network.PurpleTest;
                 NodeSettings nodeSettings = new NodeSettings("Purple", network, ProtocolVersion.ALT_PROTOCOL_VERSION).LoadArguments(args);
 
                 var node = new FullNodeBuilder()
