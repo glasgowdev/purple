@@ -144,23 +144,25 @@ namespace Purple.Bitcoin.Features.Miner
                 this.IncrementExtraNonce(pblockTemplate.Block, chainTip, nExtraNonce);
                 Block pblock = pblockTemplate.Block;
 
-                var retries = (int)maxTries;
+                var maxTries1 = (int)maxTries;
 
                 var options = new ParallelOptions
                 {
-                    MaxDegreeOfParallelism = Convert.ToInt32(Math.Ceiling((Environment.ProcessorCount * this.minerSettings.MineCpuPercentage) * 1.0)) - 2
+                    MaxDegreeOfParallelism = Convert.ToInt32(Math.Ceiling((Environment.ProcessorCount * this.minerSettings.MineCpuPercentage) * 1.0))
                 };
 
                 Parallel.ForEach(Enumerable.Range(0, InnerLoopCount), options, (i, state) =>
                 {
                     this.nodeLifetime.ApplicationStopping.ThrowIfCancellationRequested();
 
+                    ulong tries = (ulong)maxTries1;
+
                     if (state.IsStopped || state.ShouldExitCurrentIteration)
                     {
                         return;
                     }
 
-                    if (retries == 0)
+                    if (tries == 0)
                     {
                         state.Break();
                     }
@@ -171,27 +173,20 @@ namespace Purple.Bitcoin.Features.Miner
                         state.Break();
                     }
 
+                    Interlocked.Decrement(ref maxTries1);
+
                     BlockHeader header = pblock.Header.Clone();
                     header.Nonce = (uint)i;
 
-                    if (header.CheckProofOfWork(this.network.Consensus))
+                    if (!header.CheckProofOfWork(this.network.Consensus))
                     {
-                        pblock.Header.Nonce = (uint)i;
-                        state.Break();
+                        return;
                     }
 
-                    Interlocked.Decrement(ref retries);
+                    pblock.Header.Nonce = (uint)i;
+                    maxTries = tries;
+                    state.Break();
                 });
-
-                maxTries = (ulong)retries;
-
-                //while ((maxTries > 0) && (pblock.Header.Nonce < InnerLoopCount) && !pblock.CheckProofOfWork(this.network.Consensus))
-                //{
-                //    this.nodeLifetime.ApplicationStopping.ThrowIfCancellationRequested();
-
-                //    ++pblock.Header.Nonce;
-                //    --maxTries;
-                //}
 
                 if (maxTries == 0)
                     break;
