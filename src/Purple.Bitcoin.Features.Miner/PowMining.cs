@@ -151,43 +151,59 @@ namespace Purple.Bitcoin.Features.Miner
                     MaxDegreeOfParallelism = Convert.ToInt32(Math.Ceiling((Environment.ProcessorCount * this.minerSettings.MineCpuPercentage) * 1.0))
                 };
 
-                Parallel.ForEach(Enumerable.Range(0, InnerLoopCount), options, (i, state) =>
-                {
-                    this.nodeLifetime.ApplicationStopping.ThrowIfCancellationRequested();
+	            try
+	            {
+		            Parallel.ForEach(Enumerable.Range(0, InnerLoopCount), options, (i, state) =>
+		            {
+			            if (state.IsStopped || state.ShouldExitCurrentIteration)
+			            {
+				            return;
+			            }
 
-                    ulong tries = (ulong)maxTries1;
+			            if (this.nodeLifetime.ApplicationStopping.IsCancellationRequested)
+			            {
+				            state.Break();
+				            throw new OperationCanceledException();
+			            }
 
-                    if (state.IsStopped || state.ShouldExitCurrentIteration)
-                    {
-                        return;
-                    }
+						ulong tries = (ulong)maxTries1;
+						if (tries == 0)
+			            {
+				            maxTries = (uint) tries;
+				            state.Break();
+			            }
 
-                    if (tries == 0)
-                    {
-                        state.Break();
-                    }
+			            if (i == InnerLoopCount)
+			            {
+				            pblock.Header.Nonce = InnerLoopCount;
+				            state.Break();
+			            }
 
-                    if (i == InnerLoopCount)
-                    {
-                        pblock.Header.Nonce = InnerLoopCount;
-                        state.Break();
-                    }
+			            Interlocked.Decrement(ref maxTries1);
 
-                    Interlocked.Decrement(ref maxTries1);
+			            BlockHeader header = pblock.Header.Clone();
+			            header.Nonce = (uint) i;
 
-                    BlockHeader header = pblock.Header.Clone();
-                    header.Nonce = (uint)i;
+			            if (!header.CheckProofOfWork(this.network.Consensus))
+			            {
+				            return;
+			            }
 
-                    if (!header.CheckProofOfWork(this.network.Consensus))
-                    {
-                        return;
-                    }
+			            pblock.Header.Nonce = (uint) i;
+			            maxTries = tries;
+			            state.Break();
+		            });
+	            }
+	            catch (AggregateException ex)
+	            {
+		            if (ex.InnerExceptions.All(e => e is OperationCanceledException))
+		            {
+			            throw ex.InnerExceptions.First();
+		            }
 
-                    pblock.Header.Nonce = (uint)i;
-                    maxTries = tries;
-                    state.Break();
-                });
-
+		            throw ex;
+	            }
+				
                 if (maxTries == 0)
                     break;
 
