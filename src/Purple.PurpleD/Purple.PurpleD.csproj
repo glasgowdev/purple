@@ -40,4 +40,8 @@
     <PackageReference Include="NLog.Extensions.Logging" Version="1.0.0-rtm-beta5" />	
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="echo f | xcopy /y $(SolutionDir)Dependencies\CryptoNight\*.dll $(ProjectDir)$(OutDir)" />
+  </Target>
+
 </Project>
