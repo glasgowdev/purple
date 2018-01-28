@@ -37,9 +37,5 @@
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
-
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="echo f | xcopy /y $(SolutionDir)Dependencies\CryptoNight\*.dll $(ProjectDir)$(OutDir)" />
-  </Target>
   
 </Project>

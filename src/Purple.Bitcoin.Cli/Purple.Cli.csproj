@@ -13,8 +13,4 @@
     <ProjectReference Include="..\Purple.Bitcoin\Purple.Bitcoin.csproj" />
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="echo f | xcopy /y $(SolutionDir)Dependencies\CryptoNight\*.dll $(ProjectDir)$(OutDir)" />
-  </Target>
-
 </Project>
