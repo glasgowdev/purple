@@ -4,7 +4,7 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <AssemblyName>Purple.PurpleD</AssemblyName>
     <OutputType>Exe</OutputType>
-    <PackageId>Purple.StratisD</PackageId>
+    <PackageId>Purple.PurpleD</PackageId>
     <RuntimeFrameworkVersion>2.0.0</RuntimeFrameworkVersion>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
@@ -41,20 +41,15 @@
   </ItemGroup>
    
   <ItemGroup>
-    <x86deps Include="..\Dependencies\Windows\x86\**\*.*" />
-	<x64deps Include="..\Dependencies\Windows\x64\**\*.*" />
+    <dependencies Include="..\Dependencies\**\*.*" />
   </ItemGroup>
    
   <Target Name="NativeDepsBuild" AfterTargets="Build">
-    <Copy Condition="'$(Platform)' == 'AnyCPU'" SourceFiles="@(x86deps)" DestinationFiles="@(x86deps->'$(OutputPath)\%(RecursiveDir)%(Filename)%(Extension)')" />
-	<Copy Condition="'$(Platform)' == 'x64'" SourceFiles="@(x64deps)" DestinationFiles="@(x64deps->'$(OutputPath)\%(RecursiveDir)%(Filename)%(Extension)')" />
-	<Copy Condition="'$(Platform)' == 'x86'" SourceFiles="@(x86deps)" DestinationFiles="@(x86deps->'$(OutputPath)\%(RecursiveDir)%(Filename)%(Extension)')" />	
+	<Copy SourceFiles="@(dependencies)" DestinationFiles="@(dependencies->'$(OutputPath)\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
 
   <Target Name="NativeDepsPublish" AfterTargets="Publish">
-	<Copy Condition="'$(Platform)' == 'AnyCPU'" SourceFiles="@(x86deps)" DestinationFiles="@(x86deps->'$(PublishDir)\%(RecursiveDir)%(Filename)%(Extension)')" />
-	<Copy Condition="'$(Platform)' == 'x64'" SourceFiles="@(x64deps)" DestinationFiles="@(x64deps->'$(PublishDir)\%(RecursiveDir)%(Filename)%(Extension)')" />
-	<Copy Condition="'$(Platform)' == 'x86'" SourceFiles="@(x86deps)" DestinationFiles="@(x86deps->'$(PublishDir)\%(RecursiveDir)%(Filename)%(Extension)')" />	
+	<Copy SourceFiles="@(dependencies)" DestinationFiles="@(dependencies->'$(PublishDir)\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
   
 </Project>
