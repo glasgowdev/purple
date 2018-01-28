@@ -4,7 +4,7 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <AssemblyName>Purple.PurpleD</AssemblyName>
     <OutputType>Exe</OutputType>
-    <PackageId>Purple.StratisD</PackageId>
+    <PackageId>Purple.PurpleD</PackageId>
     <RuntimeFrameworkVersion>2.0.0</RuntimeFrameworkVersion>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
@@ -14,7 +14,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <NoWarn>1701;1702;1705;IDE0008;</NoWarn>
   </PropertyGroup>
-
+  
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
@@ -39,5 +39,17 @@
     <PackageReference Include="NLog" Version="5.0.0-beta09" />
     <PackageReference Include="NLog.Extensions.Logging" Version="1.0.0-rtm-beta5" />	
   </ItemGroup>
+   
+  <ItemGroup>
+    <dependencies Include="..\Dependencies\**\*.*" />
+  </ItemGroup>
+   
+  <Target Name="NativeDepsBuild" AfterTargets="Build">
+	<Copy SourceFiles="@(dependencies)" DestinationFiles="@(dependencies->'$(OutputPath)\%(RecursiveDir)%(Filename)%(Extension)')" />
+  </Target>
 
+  <Target Name="NativeDepsPublish" AfterTargets="Publish">
+	<Copy SourceFiles="@(dependencies)" DestinationFiles="@(dependencies->'$(PublishDir)\%(RecursiveDir)%(Filename)%(Extension)')" />
+  </Target>
+  
 </Project>

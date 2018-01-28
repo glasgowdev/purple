@@ -7,11 +7,17 @@ namespace NBitcoin.Crypto
 {
     public sealed class CryptoNight
     {
-        [DllImport(@"D:\git\purple\src\Cryptonight\bin\Debug\x64\Cryptonight.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void hardware_hash(byte[] input, int size, byte[] output);
+        [DllImport(@"Purple.CryptoNight_x64.dll", EntryPoint = "hardware_hash", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void hardware_hash_x64(byte[] input, int size, byte[] output);
 
-        [DllImport(@"D:\git\purple\src\Cryptonight\bin\Debug\x64\Cryptonight.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void software_hash(byte[] input, int size, byte[] output);
+        [DllImport(@"Purple.CryptoNight_x64.dll", EntryPoint = "software_hash", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void software_hash_x64(byte[] input, int size, byte[] output);
+
+        [DllImport(@"Purple.CryptoNight_x86.dll", EntryPoint = "hardware_hash", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void hardware_hash_x86(byte[] input, int size, byte[] output);
+
+        [DllImport(@"Purple.CryptoNight_x86.dll", EntryPoint = "software_hash", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void software_hash_x86(byte[] input, int size, byte[] output);
 
         private static readonly Lazy<CryptoNight> SingletonInstance = new Lazy<CryptoNight>(LazyThreadSafetyMode.PublicationOnly);
 
@@ -28,14 +34,28 @@ namespace NBitcoin.Crypto
 
             if (hardware)
             {
-                hardware_hash(input, input.Length, buffer);
+                if (Environment.Is64BitProcess)
+                {
+                    hardware_hash_x64(input, input.Length, buffer);
+                }
+                else
+                {
+                    hardware_hash_x86(input, input.Length, buffer);
+                }
             }
             else
             {
-                software_hash(input, input.Length, buffer);
+                if (Environment.Is64BitProcess)
+                {
+                    software_hash_x64(input, input.Length, buffer);
+                }
+                else
+                {
+                    software_hash_x86(input, input.Length, buffer);
+                }
             }
 
-            return new uint256(buffer.Take(32).ToArray(), true);
+            return new uint256(buffer.Take(32).ToArray());
         }
     }
 }
