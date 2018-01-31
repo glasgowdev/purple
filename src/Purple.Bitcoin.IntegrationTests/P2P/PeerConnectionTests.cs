@@ -106,7 +106,7 @@ namespace Purple.Bitcoin.IntegrationTests.P2P
 
             this.parameters.TemplateBehaviors.Add(peerAddressManagerBehaviour);
 
-            this.networkPeerFactory = new NetworkPeerFactory(this.network, DateTimeProvider.Default, this.loggerFactory);
+            this.networkPeerFactory = new NetworkPeerFactory(this.network, DateTimeProvider.Default, this.loggerFactory, this.nodeSettings);
             this.nodeLifetime = new NodeLifetime();
         }
     }

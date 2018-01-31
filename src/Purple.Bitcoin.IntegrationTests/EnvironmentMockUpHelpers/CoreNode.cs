@@ -11,6 +11,7 @@ using NBitcoin;
 using NBitcoin.DataEncoders;
 using NBitcoin.Protocol;
 using NBitcoin.RPC;
+using Purple.Bitcoin.Configuration;
 using Purple.Bitcoin.Configuration.Logging;
 using Purple.Bitcoin.Features.MemoryPool;
 using Purple.Bitcoin.Features.Miner;
@@ -66,9 +67,9 @@ namespace Purple.Bitcoin.IntegrationTests.EnvironmentMockUpHelpers
             this.FindPorts(this.ports);
 
             var loggerFactory = new ExtendedLoggerFactory();
-            loggerFactory.AddConsoleWithFilters();
+            loggerFactory.AddConsoleWithFilters();            
 
-            this.networkPeerFactory = new NetworkPeerFactory(network, DateTimeProvider.Default, loggerFactory);
+            this.networkPeerFactory = new NetworkPeerFactory(network, DateTimeProvider.Default, loggerFactory, NodeSettings.Default());
         }
 
         /// <summary>Get Purple full node if possible.</summary>

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using NBitcoin;
 using NBitcoin.Protocol;
+using Purple.Bitcoin.Configuration;
 using Purple.Bitcoin.P2P.Protocol;
 using Purple.Bitcoin.P2P.Protocol.Behaviors;
 using Purple.Bitcoin.P2P.Protocol.Payloads;
@@ -26,6 +27,10 @@ namespace Purple.Bitcoin.P2P.Peer
         /// <summary>Instance logger.</summary>
         private ILogger logger;
 
+        private NodeSettings nodeSettings;
+
+        private NetworkHandler tcpHandler;
+
         /// <summary>Specification of the network the node runs on - regtest/testnet/mainnet.</summary>
         private readonly Network network;
 
@@ -37,9 +42,6 @@ namespace Purple.Bitcoin.P2P.Peer
 
         /// <summary>Unique identifier of a client.</summary>
         public int Id { get; private set; }
-
-        /// <summary>Underlaying TCP client.</summary>
-        private TcpClient tcpClient;
 
         /// <summary>Prevents parallel execution of multiple write operations on <see cref="stream"/>.</summary>
         private AsyncLock writeLock;
@@ -53,7 +55,7 @@ namespace Purple.Bitcoin.P2P.Peer
         {
             get
             {
-                return (IPEndPoint)this.tcpClient?.Client?.RemoteEndPoint;
+                return (IPEndPoint)this.tcpHandler.TcpClient?.Client?.RemoteEndPoint;
             }
         }
 
@@ -109,20 +111,22 @@ namespace Purple.Bitcoin.P2P.Peer
         /// <param name="messageReceivedCallback">Callback to be called when a new message arrives from the peer.</param>
         /// <param name="dateTimeProvider">Provider of time functions.</param>
         /// <param name="loggerFactory">Factory for creating loggers.</param>
-        public NetworkPeerConnection(Network network, NetworkPeer peer, TcpClient client, int clientId, Func<IncomingMessage, Task> messageReceivedCallback, IDateTimeProvider dateTimeProvider, ILoggerFactory loggerFactory)
+        public NetworkPeerConnection(Network network, NetworkPeer peer, TcpClient client, int clientId, Func<IncomingMessage, Task> messageReceivedCallback, IDateTimeProvider dateTimeProvider, ILoggerFactory loggerFactory, NodeSettings nodeSettings)
         {
             this.loggerFactory = loggerFactory;
             this.logger = this.loggerFactory.CreateLogger(this.GetType().FullName, $"[{clientId}-{peer.PeerAddress.Endpoint}] ");
+
+            this.nodeSettings = nodeSettings;
 
             this.network = network;
             this.dateTimeProvider = dateTimeProvider;
 
             this.peer = peer;
             this.setPeerStateOnShutdown = NetworkPeerState.Offline;
-            this.tcpClient = client;
             this.Id = clientId;
 
-            this.stream = this.tcpClient.Connected ? this.tcpClient.GetStream() : null;
+            this.tcpHandler = new NetworkHandler(this.nodeSettings);
+            this.stream = this.tcpHandler.TcpClient.Connected ? this.tcpHandler.TcpClient.GetStream() : null;
             this.ShutdownComplete = new TaskCompletionSource<bool>();
 
             this.writeLock = new AsyncLock();
@@ -303,7 +307,11 @@ namespace Purple.Bitcoin.P2P.Peer
                 {
                     try
                     {
-                        this.tcpClient.ConnectAsync(endPoint.Address, endPoint.Port).Wait(cancellation);
+                        // this.tcpHandler.ConnectAsync(endPoint, cancellation).Wait(cancellation);
+                        this.tcpHandler.ConnectAsync(endPoint, cancellation).Wait();
+                        this.stream = this.tcpHandler.Stream;
+                        
+                        // this.tcpClient.ConnectAsync(endPoint.Address, endPoint.Port).Wait(cancellation);
                     }
                     catch (Exception e)
                     {
@@ -316,7 +324,8 @@ namespace Purple.Bitcoin.P2P.Peer
                 if (error != null)
                     throw error;
 
-                this.stream = this.tcpClient.GetStream();
+                // this.stream = this.tcpHandler.TcpClient.GetStream();
+
             }
             catch (OperationCanceledException)
             {
@@ -643,13 +652,12 @@ namespace Purple.Bitcoin.P2P.Peer
             this.logger.LogTrace("()");
 
             NetworkStream disposeStream = this.stream;
-            TcpClient disposeTcpClient = this.tcpClient;
 
             this.stream = null;
-            this.tcpClient = null;
 
             disposeStream?.Dispose();
-            disposeTcpClient?.Dispose();
+
+            this.tcpHandler.Disconnect();
 
             this.logger.LogTrace("(-)");
         }

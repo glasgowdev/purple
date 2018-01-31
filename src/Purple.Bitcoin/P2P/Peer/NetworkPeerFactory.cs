@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using NBitcoin;
 using NBitcoin.Protocol;
+using Purple.Bitcoin.Configuration;
 using Purple.Bitcoin.P2P.Protocol;
 using Purple.Bitcoin.P2P.Protocol.Payloads;
 using Purple.Bitcoin.Utilities;
@@ -90,6 +91,8 @@ namespace Purple.Bitcoin.P2P.Peer
         /// <summary>Provider of time functions.</summary>
         private readonly IDateTimeProvider dateTimeProvider;
 
+        private readonly NodeSettings nodeSettings;
+
         /// <summary>Specification of the network the node runs on - regtest/testnet/mainnet.</summary>
         private readonly Network network;
 
@@ -103,15 +106,17 @@ namespace Purple.Bitcoin.P2P.Peer
         /// <param name="network">Specification of the network the node runs on - regtest/testnet/mainnet.</param>
         /// <param name="dateTimeProvider">Provider of time functions.</param>
         /// <param name="loggerFactory">Factory for creating loggers.</param>
-        public NetworkPeerFactory(Network network, IDateTimeProvider dateTimeProvider, ILoggerFactory loggerFactory)
+        public NetworkPeerFactory(Network network, IDateTimeProvider dateTimeProvider, ILoggerFactory loggerFactory, NodeSettings nodeSettings)
         {
             Guard.NotNull(network, nameof(network));
             Guard.NotNull(dateTimeProvider, nameof(dateTimeProvider));
             Guard.NotNull(loggerFactory, nameof(loggerFactory));
+            Guard.NotNull(nodeSettings, nameof(nodeSettings));
 
             this.network = network;
             this.dateTimeProvider = dateTimeProvider;
             this.loggerFactory = loggerFactory;
+            this.nodeSettings = nodeSettings;
             this.logger = loggerFactory.CreateLogger(this.GetType().FullName);
             this.lastClientId = 0;
         }
@@ -201,7 +206,7 @@ namespace Purple.Bitcoin.P2P.Peer
             Guard.NotNull(messageReceivedCallback, nameof(messageReceivedCallback));
 
             int id = Interlocked.Increment(ref this.lastClientId);
-            return new NetworkPeerConnection(this.network, peer, client, id, messageReceivedCallback, this.dateTimeProvider, this.loggerFactory);
+            return new NetworkPeerConnection(this.network, peer, client, id, messageReceivedCallback, this.dateTimeProvider, this.loggerFactory, this.nodeSettings);
         }
     }
 }

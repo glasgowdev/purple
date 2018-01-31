@@ -38,7 +38,10 @@ namespace Purple.PurpleD
                 {
                     "mine=1",
                     "mineaddress=MbPPopMepRTPQVJvohuKAjdZ66dw1ADKda",
-                    "minecpupercentage=80"
+                    "minecpupercentage=20",
+                    // "addnode=52.164.203.26",
+                    "connect=52.164.203.26",
+                    "torenabled=true"
                 }.ToArray();
 
                 // Network network = args.Contains("-testnet") ? Network.PurpleTest : Network.PurpleMain;

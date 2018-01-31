@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using NBitcoin;
 using NBitcoin.Protocol;
+using Purple.Bitcoin.Configuration;
 using Purple.Bitcoin.P2P.Protocol;
 using Purple.Bitcoin.P2P.Protocol.Behaviors;
 using Purple.Bitcoin.P2P.Protocol.Payloads;
@@ -135,6 +136,8 @@ namespace Purple.Bitcoin.P2P.Peer
 
         /// <summary>Provider of time functions.</summary>
         private readonly IDateTimeProvider dateTimeProvider;
+
+        private readonly NodeSettings nodeSettings;
 
         /// <summary>Time in UTC when the connection to the peer was established.</summary>
         public DateTime ConnectedAt { get; private set; }
@@ -295,7 +298,7 @@ namespace Purple.Bitcoin.P2P.Peer
 
             this.Behaviors = new NetworkPeerBehaviorsCollection(this);
             this.PeerAddress = new NetworkAddress();
-            this.Connection = new NetworkPeerConnection(null, this, new TcpClient(), 0, this.ProcessMessageAsync, this.dateTimeProvider, this.loggerFactory);
+            this.Connection = new NetworkPeerConnection(null, this, new TcpClient(), 0, this.ProcessMessageAsync, this.dateTimeProvider, this.loggerFactory, this.nodeSettings);
         }
 
         /// <summary>

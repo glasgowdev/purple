@@ -21,6 +21,7 @@ namespace Purple.Bitcoin.Tests.P2P
         private readonly NetworkPeerConnectionParameters networkPeerParameters;
         private readonly NodeLifetime nodeLifetime;
         private readonly Network network;
+        private readonly NodeSettings nodeSettings;
 
         public PeerConnectorTests()
         {
@@ -30,7 +31,8 @@ namespace Purple.Bitcoin.Tests.P2P
             this.asyncLoopFactory = new AsyncLoopFactory(this.extendedLoggerFactory);
             this.network = Network.PurpleMain;
             this.networkPeerParameters = new NetworkPeerConnectionParameters();
-            this.networkPeerFactory = new NetworkPeerFactory(this.network, DateTimeProvider.Default, this.extendedLoggerFactory);
+            this.nodeSettings = NodeSettings.Default();
+            this.networkPeerFactory = new NetworkPeerFactory(this.network, DateTimeProvider.Default, this.extendedLoggerFactory, this.nodeSettings);
             this.nodeLifetime = new NodeLifetime();
         }
 

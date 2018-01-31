@@ -148,7 +148,7 @@ namespace Purple.Bitcoin.IntegrationTests
                 };
 
                 PowConsensusValidator consensusValidator = new PowConsensusValidator(this.network, new Checkpoints(), dateTimeProvider, loggerFactory);
-                NetworkPeerFactory networkPeerFactory = new NetworkPeerFactory(this.network, dateTimeProvider, loggerFactory);
+                NetworkPeerFactory networkPeerFactory = new NetworkPeerFactory(this.network, dateTimeProvider, loggerFactory, nodeSettings);
 
                 var peerAddressManager = new PeerAddressManager(nodeSettings.DataFolder, loggerFactory);
                 var peerDiscovery = new PeerDiscovery(new AsyncLoopFactory(loggerFactory), loggerFactory, Network.PurpleMain, networkPeerFactory, new NodeLifetime(), nodeSettings, peerAddressManager);
