@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Controllers;
@@ -49,7 +50,7 @@ namespace Purple.Bitcoin.Features.RPC
             var method = (string)req["method"];
 
             var controllerName = this.actionDescriptor.ActionDescriptors.Items.OfType<ControllerActionDescriptor>()
-                    .FirstOrDefault(w => w.ActionName == method)?.ControllerName ?? string.Empty;
+                    .FirstOrDefault(w => w.ActionName.Equals(method, StringComparison.InvariantCultureIgnoreCase))?.ControllerName ?? string.Empty;
 
             context.RouteData.Values.Add("action", method);
             //TODO: Need to be extensible

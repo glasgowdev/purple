@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Purple.Bitcoin.Features.Miner;
+using Purple.Bitcoin.Features.Miner.Controllers;
 using Purple.Bitcoin.Features.Miner.Interfaces;
 using Purple.Bitcoin.Features.Miner.Models;
 using Purple.Bitcoin.Features.Wallet;

@@ -51,7 +51,7 @@ namespace Purple.Bitcoin.Base
         private readonly ChainState chainState;
 
         /// <summary>Access to the database of blocks.</summary>
-        private readonly ChainRepository chainRepository;
+        private readonly IChainRepository chainRepository;
 
         /// <summary>User defined node settings.</summary>
         private readonly NodeSettings nodeSettings;
@@ -121,7 +121,7 @@ namespace Purple.Bitcoin.Base
             ConcurrentChain chain,
             ChainState chainState,
             IConnectionManager connectionManager,
-            ChainRepository chainRepository,
+            IChainRepository chainRepository,
             IDateTimeProvider dateTimeProvider,
             IAsyncLoopFactory asyncLoopFactory,
             TimeSyncBehaviorState timeSyncBehaviorState,
@@ -293,7 +293,7 @@ namespace Purple.Bitcoin.Base
                     services.AddSingleton<IDateTimeProvider>(DateTimeProvider.Default);
                     services.AddSingleton<IInvalidBlockHashStore, InvalidBlockHashStore>();
                     services.AddSingleton<ChainState>();
-                    services.AddSingleton<ChainRepository>();
+                    services.AddSingleton<IChainRepository, ChainRepository>();
                     services.AddSingleton<TimeSyncBehaviorState>();
                     services.AddSingleton<IAsyncLoopFactory, AsyncLoopFactory>();
                     services.AddSingleton<NodeDeployments>();

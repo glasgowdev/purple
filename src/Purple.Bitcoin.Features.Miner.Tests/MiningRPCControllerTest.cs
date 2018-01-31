@@ -4,6 +4,8 @@ using System.Security;
 using Moq;
 using NBitcoin;
 using Newtonsoft.Json;
+using Purple.Bitcoin.Connection;
+using Purple.Bitcoin.Features.Miner.Controllers;
 using Purple.Bitcoin.Features.Miner.Interfaces;
 using Purple.Bitcoin.Features.Miner.Models;
 using Purple.Bitcoin.Features.RPC;
@@ -23,6 +25,8 @@ namespace Purple.Bitcoin.Features.Miner.Tests
         private Mock<IWalletManager> walletManager;
         private MiningRPCControllerFixture fixture;
         private Mock<IPowMining> powMining;
+        private Mock<IConnectionManager> connectionManager;
+        private Mock<ConcurrentChain> chain;
 
         public MiningRPCControllerTest(MiningRPCControllerFixture fixture)
         {
@@ -31,11 +35,14 @@ namespace Purple.Bitcoin.Features.Miner.Tests
             this.fullNode = new Mock<IFullNode>();
             this.posMinting = new Mock<IPosMinting>();
             this.walletManager = new Mock<IWalletManager>();
+            this.connectionManager = new Mock<IConnectionManager>();
+            this.chain = new Mock<ConcurrentChain>();
 
             this.fullNode.Setup(f => f.NodeService<IWalletManager>(false))
                 .Returns(this.walletManager.Object);
 
-            this.controller = new MiningRPCController(this.powMining.Object, this.fullNode.Object, this.LoggerFactory.Object, this.walletManager.Object, this.posMinting.Object);
+            this.controller = new MiningRPCController(this.powMining.Object, this.fullNode.Object,this.connectionManager.Object,
+                this.chain.Object, this.LoggerFactory.Object, this.walletManager.Object, this.posMinting.Object);
         }
 
 
@@ -146,7 +153,8 @@ namespace Purple.Bitcoin.Features.Miner.Tests
         [Fact]
         public void GetStakingInfo_WithoutPosMinting_ReturnsEmptyStakingInfoModel()
         {
-            this.controller = new MiningRPCController(this.powMining.Object, this.fullNode.Object, this.LoggerFactory.Object, this.walletManager.Object, null);
+            this.controller = new MiningRPCController(this.powMining.Object, this.fullNode.Object, this.connectionManager.Object, this.chain.Object,
+                this.LoggerFactory.Object, this.walletManager.Object, null);
 
             var result = this.controller.GetStakingInfo(true);
 

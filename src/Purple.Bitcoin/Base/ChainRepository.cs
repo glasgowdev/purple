@@ -12,6 +12,8 @@ namespace Purple.Bitcoin.Base
 {
     public interface IChainRepository : IDisposable
     {
+        Task<BlockHeader> GetAsync(int height);
+
         Task LoadAsync(ConcurrentChain chain);
 
         Task SaveAsync(ConcurrentChain chain);
@@ -34,6 +36,28 @@ namespace Purple.Bitcoin.Base
         public ChainRepository(DataFolder dataFolder)
             : this(dataFolder.ChainPath)
         {
+        }
+
+        public Task<BlockHeader> GetAsync(int height)
+        {
+            Task<BlockHeader> task = Task.Run(() =>
+           {
+               using (DBreeze.Transactions.Transaction transaction = this.dbreeze.GetTransaction())
+               {
+                   transaction.ValuesLazyLoadingIsOn = false;
+                   BlockHeader res = null;
+                   Row<int, BlockHeader> firstRow = transaction.Select<int, BlockHeader>("Chain", height);
+
+                   if (firstRow.Exists)
+                   {
+                       res = firstRow.Value;
+                   }
+
+                   return res;
+               }
+           });
+
+            return task;
         }
 
         public Task LoadAsync(ConcurrentChain chain)
