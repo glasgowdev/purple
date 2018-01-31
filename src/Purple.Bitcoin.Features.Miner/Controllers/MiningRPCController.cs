@@ -5,6 +5,7 @@ using System.Security;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NBitcoin;
+using Purple.Bitcoin.Connection;
 using Purple.Bitcoin.Features.Miner.Interfaces;
 using Purple.Bitcoin.Features.Miner.Models;
 using Purple.Bitcoin.Features.RPC;
@@ -12,7 +13,7 @@ using Purple.Bitcoin.Features.Wallet;
 using Purple.Bitcoin.Features.Wallet.Interfaces;
 using Purple.Bitcoin.Utilities;
 
-namespace Purple.Bitcoin.Features.Miner
+namespace Purple.Bitcoin.Features.Miner.Controllers
 {
     /// <summary>
     /// RPC controller for calls related to PoW mining and PoS minting.
@@ -26,6 +27,9 @@ namespace Purple.Bitcoin.Features.Miner
         /// <summary>PoW miner.</summary>
         private readonly IPowMining powMining;
 
+        /// <summary>Connection manager.</summary>
+        private readonly IConnectionManager connectionManager;
+
         /// <summary>PoS staker.</summary>
         private readonly IPosMinting posMinting;
 
@@ -35,26 +39,60 @@ namespace Purple.Bitcoin.Features.Miner
         /// <summary>Wallet manager.</summary>
         private readonly IWalletManager walletManager;
 
+        /// <summary>Chain.</summary>
+        private readonly ConcurrentChain chain;
+
         /// <summary>
         /// Initializes a new instance of the object.
         /// </summary>
         /// <param name="powMining">PoW miner.</param>
         /// <param name="fullNode">Full node to offer mining RPC.</param>
+        /// <param name="connectionManager">Connection Manager to ensure connectivity.</param>
+        /// <param name="chain">Chain.</param>
         /// <param name="loggerFactory">Factory to be used to create logger for the node.</param>
         /// <param name="walletManager">The wallet manager.</param>
         /// <param name="posMinting">PoS staker or null if PoS staking is not enabled.</param>
-        public MiningRPCController(IPowMining powMining, IFullNode fullNode, ILoggerFactory loggerFactory, IWalletManager walletManager, IPosMinting posMinting = null) : base(fullNode: fullNode)
+        public MiningRPCController(IPowMining powMining, IFullNode fullNode, IConnectionManager connectionManager, ConcurrentChain chain,
+            ILoggerFactory loggerFactory, IWalletManager walletManager, IPosMinting posMinting = null) : base(fullNode: fullNode)
         {
             Guard.NotNull(powMining, nameof(powMining));
             Guard.NotNull(fullNode, nameof(fullNode));
+            Guard.NotNull(connectionManager, nameof(connectionManager));
+            Guard.NotNull(chain, nameof(chain));
             Guard.NotNull(loggerFactory, nameof(loggerFactory));
             Guard.NotNull(walletManager, nameof(walletManager));
 
             this.fullNode = fullNode;
+            this.connectionManager = connectionManager;
+            this.chain = chain;
             this.logger = loggerFactory.CreateLogger(this.GetType().FullName);
             this.walletManager = walletManager;
             this.powMining = powMining;
             this.posMinting = posMinting;
+        }
+
+        [ActionName("getblocktemplate")]
+        [ActionDescription("Returns data needed to construct a block to work on.")]
+        public uint256 GetBlockTemplate(string mode)
+        {
+            this.logger.LogTrace("({0}:{1})", nameof(mode), mode);
+            if (!string.Equals("template", mode, StringComparison.InvariantCultureIgnoreCase) &&
+                !string.Equals("proposal", mode, StringComparison.InvariantCultureIgnoreCase))
+            {
+                throw new RPCServerException(NBitcoin.RPC.RPCErrorCode.RPC_INVALID_PARAMETER, "Invalid mode.");
+            }
+
+            if (this.connectionManager.Network.SeedNodes.Any() && !this.connectionManager.ConnectedPeers.Any())
+            {
+                throw new RPCServerException(NBitcoin.RPC.RPCErrorCode.RPC_CLIENT_NOT_CONNECTED, "Purple is not connected.");
+            }
+
+            if (!this.chain.IsDownloaded())
+            {
+                throw new RPCServerException(NBitcoin.RPC.RPCErrorCode.RPC_CLIENT_IN_INITIAL_DOWNLOAD, "Purple is downloading blocks.");
+            }
+
+            return this.chain.Tip.HashBlock;
         }
 
         /// <summary>
