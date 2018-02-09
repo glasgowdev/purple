@@ -13,6 +13,7 @@ namespace Purple.Bitcoin.Features.BlockStore.Tests
         public uint256 BlockHash { get; private set; }
         public bool TxIndex { get; private set; }
         public BlockStoreRepositoryPerformanceCounter PerformanceCounter { get; private set; }
+        public bool AddressIndex => throw new NotImplementedException();
 
         public BlockRepositoryInMemory()
         {
@@ -108,6 +109,11 @@ namespace Purple.Bitcoin.Features.BlockStore.Tests
         public void Dispose()
         {
             this.Dispose(true);
+        }
+
+        public Task SetAddressIndexAsync(bool addressIndex)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion IDisposable Support

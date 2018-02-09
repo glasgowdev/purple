@@ -93,11 +93,11 @@ namespace Purple.Bitcoin.Features.Miner
                 return this.mining; // already mining
 
             this.mining = this.asyncLoopFactory.Run("PowMining.Mine", token =>
-            {
-                this.GenerateBlocks(new ReserveScript { reserveSfullNodecript = reserveScript }, int.MaxValue, int.MaxValue);
-                this.mining = null;
-                return Task.CompletedTask;
-            },
+                {
+                    this.GenerateBlocks(new ReserveScript { reserveSfullNodecript = reserveScript }, int.MaxValue, int.MaxValue);
+                    this.mining = null;
+                    return Task.CompletedTask;
+                },
             this.nodeLifetime.ApplicationStopping,
             repeatEvery: TimeSpans.RunOnce,
             startAfter: TimeSpans.TenSeconds);
@@ -111,6 +111,8 @@ namespace Purple.Bitcoin.Features.Miner
             ulong nHeightStart = 0;
             ulong nHeightEnd = 0;
             ulong nHeight = 0;
+
+            var add = reserveScript.reserveSfullNodecript.GetDestinationAddress(this.network);
 
             nHeightStart = (ulong)this.chain.Height;
             nHeight = nHeightStart;
@@ -148,62 +150,67 @@ namespace Purple.Bitcoin.Features.Miner
 
                 var options = new ParallelOptions
                 {
-                    MaxDegreeOfParallelism = Convert.ToInt32(Math.Ceiling((Environment.ProcessorCount * this.minerSettings.MineCpuPercentage) * 1.0))
+                    MaxDegreeOfParallelism = 4
                 };
 
-	            try
-	            {
-		            Parallel.ForEach(Enumerable.Range(0, InnerLoopCount), options, (i, state) =>
-		            {
-			            if (state.IsStopped || state.ShouldExitCurrentIteration)
-			            {
-				            return;
-			            }
+                //var options = new ParallelOptions
+                //{
+                //    MaxDegreeOfParallelism = Convert.ToInt32(Math.Ceiling((Environment.ProcessorCount * this.minerSettings.MineCpuPercentage) * 1.0))
+                //};
 
-			            if (this.nodeLifetime.ApplicationStopping.IsCancellationRequested)
-			            {
-				            state.Break();
-				            throw new OperationCanceledException();
-			            }
+                try
+                {
+                    Parallel.ForEach(Enumerable.Range(0, InnerLoopCount), options, (i, state) =>
+                    {
+                        if (state.IsStopped || state.ShouldExitCurrentIteration)
+                        {
+                            return;
+                        }
 
-						ulong tries = (ulong)maxTries1;
-						if (tries == 0)
-			            {
-				            maxTries = (uint) tries;
-				            state.Break();
-			            }
+                        if (this.nodeLifetime.ApplicationStopping.IsCancellationRequested)
+                        {
+                            state.Break();
+                            throw new OperationCanceledException();
+                        }
 
-			            if (i == InnerLoopCount)
-			            {
-				            pblock.Header.Nonce = InnerLoopCount;
-				            state.Break();
-			            }
+                        ulong tries = (ulong)maxTries1;
+                        if (tries == 0)
+                        {
+                            maxTries = (uint)tries;
+                            state.Break();
+                        }
 
-			            Interlocked.Decrement(ref maxTries1);
+                        if (i == InnerLoopCount)
+                        {
+                            pblock.Header.Nonce = InnerLoopCount;
+                            state.Break();
+                        }
 
-			            BlockHeader header = pblock.Header.Clone();
-			            header.Nonce = (uint) i;
+                        Interlocked.Decrement(ref maxTries1);
 
-			            if (!header.CheckProofOfWork(this.network.Consensus))
-			            {
-				            return;
-			            }
+                        BlockHeader header = pblock.Header.Clone();
+                        header.Nonce = (uint)i;
 
-			            pblock.Header.Nonce = (uint) i;
-			            maxTries = tries;
-			            state.Break();
-		            });
-	            }
-	            catch (AggregateException ex)
-	            {
-		            if (ex.InnerExceptions.All(e => e is OperationCanceledException))
-		            {
-			            throw ex.InnerExceptions.First();
-		            }
+                        if (!header.CheckProofOfWork(this.network.Consensus))
+                        {
+                            return;
+                        }
 
-		            throw ex;
-	            }
-				
+                        pblock.Header.Nonce = (uint)i;
+                        maxTries = tries;
+                        state.Break();
+                    });
+                }
+                catch (AggregateException ex)
+                {
+                    if (ex.InnerExceptions.All(e => e is OperationCanceledException))
+                    {
+                        throw ex.InnerExceptions.First();
+                    }
+
+                    throw ex;
+                }
+
                 if (maxTries == 0)
                     break;
 

@@ -40,7 +40,7 @@ namespace Purple.Bitcoin.Base
 
         public Task<BlockHeader> GetAsync(int height)
         {
-            Task<BlockHeader> task = Task.Run(() =>
+           Task<BlockHeader> task = Task.Run(() =>
            {
                using (DBreeze.Transactions.Transaction transaction = this.dbreeze.GetTransaction())
                {
@@ -57,7 +57,7 @@ namespace Purple.Bitcoin.Base
                }
            });
 
-            return task;
+           return task;
         }
 
         public Task LoadAsync(ConcurrentChain chain)
