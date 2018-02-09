@@ -526,7 +526,7 @@ namespace Purple.Bitcoin.Features.Consensus
         /// </summary>
         /// <param name="height">Block's height.</param>
         /// <returns><c>true</c> if the block with provided height is premined, <c>false</c> otherwise.</returns>
-        private bool IsPremine(int height)
+        public bool IsPremine(int height)
         {
             return (this.consensusOptions.PremineHeight > 0) &&
                    (this.consensusOptions.PremineReward > 0) &&

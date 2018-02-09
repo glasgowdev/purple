@@ -41,12 +41,15 @@ namespace Purple.Bitcoin.Features.Miner
 
             base.CreateNewBlock(scriptPubKeyIn, fMineWitnessTx);
 
-            this.coinbase.Outputs[0].ScriptPubKey = new Script();
-            this.coinbase.Outputs[0].Value = Money.Zero;
-
             PosConsensusValidator posValidator = this.consensusLoop.Validator as PosConsensusValidator;
             Guard.NotNull(posValidator, nameof(posValidator));
 
+            if (!posValidator.IsPremine(this.height))
+            {
+                this.coinbase.Outputs[0].ScriptPubKey = new Script();
+                this.coinbase.Outputs[0].Value = Money.Zero;
+            }
+            
             this.logger.LogTrace("(-)");
             return this.pblocktemplate;
         }

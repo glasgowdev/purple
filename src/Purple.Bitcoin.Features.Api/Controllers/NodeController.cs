@@ -2,7 +2,7 @@
 
 namespace Purple.Bitcoin.Features.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/node")]
     public class NodeController : Controller
     {
         private readonly IFullNode fullNode;

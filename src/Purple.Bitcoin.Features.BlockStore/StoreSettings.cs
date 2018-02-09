@@ -17,6 +17,9 @@ namespace Purple.Bitcoin.Features.BlockStore
         /// <summary><c>true</c> to enable pruning to reduce storage requirements by enabling deleting of old blocks.</summary>
         public bool Prune { get; set; }
 
+        /// <summary><c>true</c> to maintain a full address index.</summary>
+        public bool AddressIndex { get; set; }
+
         private Action<StoreSettings> callback = null;
 
         public StoreSettings()
@@ -46,11 +49,15 @@ namespace Purple.Bitcoin.Features.BlockStore
             this.Prune = config.GetOrDefault<bool>("prune", false);
             this.TxIndex = config.GetOrDefault<bool>("txindex", false);
             this.ReIndex = config.GetOrDefault<bool>("reindex", false);
+            this.AddressIndex = config.GetOrDefault<bool>("addressindex", false);
 
             this.callback?.Invoke(this);
 
             if (this.Prune && this.TxIndex)
                 throw new ConfigurationException("Prune mode is incompatible with -txindex");
+
+            if (this.Prune && this.AddressIndex)
+                throw new ConfigurationException("Prune mode is incompatible with -addressindex");
         }
     }
 }

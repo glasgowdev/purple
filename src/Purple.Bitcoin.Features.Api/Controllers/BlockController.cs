@@ -6,7 +6,7 @@ using Purple.Bitcoin.Features.BlockStore;
 
 namespace Purple.Bitcoin.Features.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/block")]
     public class BlockController : Controller
     {
         private readonly IFullNode fullNode;
@@ -32,7 +32,6 @@ namespace Purple.Bitcoin.Features.Api.Controllers
         {
             BlockHeader header = await this.chainRepository.GetAsync(height);
             uint256 hash = header.GetHash(this.fullNode.Network.NetworkOptions);
-            var t = hash.ToString();
             Block block = await this.blockRepository.GetAsync(hash);
             return new JsonResult(block);
         }

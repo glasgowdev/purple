@@ -30,6 +30,7 @@
   <ItemGroup>
     <ProjectReference Include="..\HashLib\HashLib.csproj" />
     <ProjectReference Include="..\Purple.Bitcoin.Features.BlockStore\Purple.Bitcoin.Features.BlockStore.csproj" />
+    <ProjectReference Include="..\Purple.Bitcoin.Features.Consensus\Purple.Bitcoin.Features.Consensus.csproj" />
     <ProjectReference Include="..\Purple.Bitcoin\Purple.Bitcoin.csproj" />
   </ItemGroup>
 

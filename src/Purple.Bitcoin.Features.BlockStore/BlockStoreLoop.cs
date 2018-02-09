@@ -162,6 +162,18 @@ namespace Purple.Bitcoin.Features.BlockStore
                     await this.BlockRepository.SetTxIndexAsync(this.storeSettings.TxIndex).ConfigureAwait(false);
             }
 
+            if (this.storeSettings.AddressIndex != this.BlockRepository.AddressIndex)
+            {
+                if (this.StoreTip != this.Chain.Genesis)
+                    throw new BlockStoreException($"You need to rebuild the {this.StoreName} database using -reindex-chainstate to change -txindex");
+
+                if (this.storeSettings.AddressIndex && !this.storeSettings.TxIndex)
+                    throw new BlockStoreException($"You need to to enable -txindex");
+
+                if (this.storeSettings.AddressIndex)
+                    await this.BlockRepository.SetAddressIndexAsync(this.storeSettings.AddressIndex).ConfigureAwait(false);
+            }
+
             this.SetHighestPersistedBlock(this.StoreTip);
 
             this.stepChain = new BlockStoreStepChain();

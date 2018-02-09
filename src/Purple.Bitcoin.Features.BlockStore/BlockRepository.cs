@@ -70,6 +70,8 @@ namespace Purple.Bitcoin.Features.BlockStore
 
         Task SetTxIndexAsync(bool txIndex);
 
+        Task SetAddressIndexAsync(bool addressIndex);
+
         /// <summary>
         /// Get the next block hash
         /// </summary>
@@ -78,6 +80,8 @@ namespace Purple.Bitcoin.Features.BlockStore
         BlockStoreRepositoryPerformanceCounter PerformanceCounter { get; }
 
         bool TxIndex { get; }
+
+        bool AddressIndex { get; }
     }
 
     public class BlockRepository : IBlockRepository
@@ -94,11 +98,15 @@ namespace Purple.Bitcoin.Features.BlockStore
 
         protected static readonly byte[] TxIndexKey = new byte[1];
 
+        protected static readonly byte[] AddressIndexKey = new byte[2];
+
         public uint256 BlockHash { get; private set; }
 
         public BlockStoreRepositoryPerformanceCounter PerformanceCounter { get; }
 
         public bool TxIndex { get; private set; }
+
+        public bool AddressIndex { get; private set; }
 
         /// <summary>Provider of time functions.</summary>
         protected readonly IDateTimeProvider dateTimeProvider;
@@ -154,6 +162,12 @@ namespace Purple.Bitcoin.Features.BlockStore
                     if (this.LoadTxIndex(transaction) == null)
                     {
                         this.SaveTxIndex(transaction, false);
+                        doCommit = true;
+                    }
+
+                    if (this.LoadAddressIndex(transaction) == null)
+                    {
+                        this.SaveAddressIndex(transaction, false);
                         doCommit = true;
                     }
 
@@ -319,7 +333,83 @@ namespace Purple.Bitcoin.Features.BlockStore
             {
                 this.PerformanceCounter.AddRepositoryInsertCount(1);
                 dbreezeTransaction.Insert<byte[], uint256>("Transaction", transaction.GetHash().ToBytes(), block.GetHash());
+
+                if (this.AddressIndex)
+                {
+                    this.OnInsertAddressHistory(dbreezeTransaction, transaction);
+                }
             }
+
+            this.logger.LogTrace("(-)");
+        }
+
+        protected virtual void OnInsertAddressHistory(DBreeze.Transactions.Transaction dbreezeTransaction, Transaction transaction)
+        {
+            this.logger.LogTrace("({0})", nameof(transaction));
+
+            if (transaction.IsCoinBase)
+            {
+                // this.OnInsertAddressCoinbase(dbreezeTransaction, transaction);
+            }
+            else if (transaction.IsCoinStake)
+            {
+                this.OnInsertAddressCoinStake(dbreezeTransaction, transaction);
+            }
+            else
+            {
+                // tx
+            }
+
+            this.logger.LogTrace("(-)");
+        }
+
+        protected virtual void OnInsertAddressCoinbase(DBreeze.Transactions.Transaction dbreezeTransaction, Transaction transaction)
+        {
+            this.logger.LogTrace("({0})", nameof(transaction));
+
+            Guard.Assert(transaction.IsCoinBase);
+
+            TxOut vout = transaction.Outputs.Single();
+            BitcoinAddress address = vout.ScriptPubKey.GetDestinationAddress(this.network);
+
+            AddressHistory history;
+
+            // If the block is already in store don't write it again.
+            Row<string, AddressHistory> blockRow = dbreezeTransaction.Select<string, AddressHistory>("Address", address.ToString());
+            if (!blockRow.Exists)
+            {
+                this.PerformanceCounter.AddRepositoryMissCount(1);
+                this.PerformanceCounter.AddRepositoryInsertCount(1);
+                history = new AddressHistory(address);
+            }
+            else
+            {
+                this.PerformanceCounter.AddRepositoryHitCount(1);
+                history = blockRow.Value;
+            }
+
+            history.Balance += vout.Value;
+            history.Transactions.Add(new AddressTransaction(transaction.GetHash(), vout.Value, TransactionDirection.Vin));
+            dbreezeTransaction.Insert<string, AddressHistory>("Address", address.ToString(), history);
+
+            this.logger.LogTrace("(-)");
+        }
+
+        protected virtual void OnInsertAddressCoinStake(DBreeze.Transactions.Transaction dbreezeTransaction, Transaction transaction)
+        {
+            this.logger.LogTrace("({0})", nameof(transaction));
+
+            Guard.Assert(transaction.IsCoinStake);
+
+            TxIn vin = transaction.Inputs.First();
+
+            //Transaction prevTx = this.GetTrxAsync(vin.PrevOut.Hash).Result;
+            //if (prevTx != null)
+            //{
+            //    TxOut prevTxOut = prevTx.Outputs.Fir
+            //    string inAddress = ;
+            //    Money oldAddress;
+            //}
 
             this.logger.LogTrace("(-)");
         }
@@ -343,7 +433,8 @@ namespace Purple.Bitcoin.Features.BlockStore
                 // however we need to find how byte arrays are sorted in DBreeze.
                 using (DBreeze.Transactions.Transaction transaction = this.DBreeze.GetTransaction())
                 {
-                    transaction.SynchronizeTables("Block", "Transaction");
+                    transaction.ValuesLazyLoadingIsOn = false;
+                    transaction.SynchronizeTables("Block", "Transaction", "Address");
                     this.OnInsertBlocks(transaction, blocks);
 
                     // Commit additions
@@ -401,6 +492,59 @@ namespace Purple.Bitcoin.Features.BlockStore
                 using (DBreeze.Transactions.Transaction transaction = this.DBreeze.GetTransaction())
                 {
                     this.SaveTxIndex(transaction, txIndex);
+                    transaction.Commit();
+                }
+
+                this.logger.LogTrace("(-)");
+            });
+
+            this.logger.LogTrace("(-)");
+            return task;
+        }
+
+        private bool? LoadAddressIndex(DBreeze.Transactions.Transaction dbreezeTransaction)
+        {
+            this.logger.LogTrace("()");
+
+            bool? res = null;
+            Row<byte[], bool> row = dbreezeTransaction.Select<byte[], bool>("Common", AddressIndexKey);
+            if (row.Exists)
+            {
+                this.PerformanceCounter.AddRepositoryHitCount(1);
+                this.AddressIndex = row.Value;
+                res = row.Value;
+            }
+            else
+            {
+                this.PerformanceCounter.AddRepositoryMissCount(1);
+            }
+
+            this.logger.LogTrace("(-):{0}", res);
+            return res;
+        }
+
+        protected void SaveAddressIndex(DBreeze.Transactions.Transaction dbreezeTransaction, bool addressIndex)
+        {
+            this.logger.LogTrace("({0}:{1})", nameof(addressIndex), addressIndex);
+
+            this.AddressIndex = addressIndex;
+            this.PerformanceCounter.AddRepositoryInsertCount(1);
+            dbreezeTransaction.Insert<byte[], bool>("Common", AddressIndexKey, addressIndex);
+
+            this.logger.LogTrace("(-)");
+        }
+
+        public Task SetAddressIndexAsync(bool addressIndex)
+        {
+            this.logger.LogTrace("({0}:{1})", nameof(addressIndex), addressIndex);
+
+            Task task = Task.Run(() =>
+            {
+                this.logger.LogTrace("()");
+
+                using (DBreeze.Transactions.Transaction transaction = this.DBreeze.GetTransaction())
+                {
+                    this.SaveAddressIndex(transaction, addressIndex);
                     transaction.Commit();
                 }
 
@@ -553,6 +697,11 @@ namespace Purple.Bitcoin.Features.BlockStore
             {
                 this.PerformanceCounter.AddRepositoryDeleteCount(1);
                 dbreezeTransaction.RemoveKey<byte[]>("Transaction", transaction.GetHash().ToBytes());
+
+                if (this.AddressIndex)
+                {
+                    throw new NotImplementedException();
+                }
             }
 
             this.logger.LogTrace("(-)");
@@ -625,7 +774,7 @@ namespace Purple.Bitcoin.Features.BlockStore
 
                 using (DBreeze.Transactions.Transaction transaction = this.DBreeze.GetTransaction())
                 {
-                    transaction.SynchronizeTables("Block", "Common", "Transaction");
+                    transaction.SynchronizeTables("Block", "Common", "Transaction", "Address");
                     transaction.ValuesLazyLoadingIsOn = false;
 
                     List<Block> blocks = this.GetBlocksFromHashes(transaction, hashes);

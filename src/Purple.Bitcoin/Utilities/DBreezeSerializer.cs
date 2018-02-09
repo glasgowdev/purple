@@ -110,6 +110,20 @@ namespace Purple.Bitcoin.Utilities
                 return rewind;
             }
 
+            if (type == typeof(AddressHistory))
+            {
+                AddressHistory history = new AddressHistory();
+                history.ReadWrite(bytes, options: this.NetworkOptions);
+                return history;
+            }
+
+            if (type == typeof(AddressTransaction))
+            {
+                AddressTransaction transaction = new AddressTransaction();
+                transaction.ReadWrite(bytes, options: this.NetworkOptions);
+                return transaction;
+            }
+
             if (type == typeof(uint256))
                 return new uint256(bytes);
 
